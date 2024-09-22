@@ -3,7 +3,7 @@ import sys
 import os
 
 pygame.init()
-
+filename = input("Enter the filename (e.g., 'levels/level1.py'): ")
 
 TILE_SIZE = 32
 GRID_WIDTH, GRID_HEIGHT = 18, 18  
@@ -146,14 +146,20 @@ def main():
                         print(row)
 
                 elif event.key == pygame.K_q:
-                    
                     matrix = g.printMatrix()
-                    print("Final Tile Matrix with Rotations:")
-                    for row in matrix:
-                        print(row)
-                    running = False
-
-        
+                    directory = os.path.dirname(filename)
+                    if directory:
+                        os.makedirs(directory, exist_ok=True)
+                    try:
+                        with open(filename, 'w') as f:
+                            f.write('matrix = [\n')
+                            for row in matrix:
+                                f.write(f'    {row},\n')
+                            f.write(']\n')
+                        print(f"Level written successfully to {filename}!")
+                    except Exception as e:
+                        print(f"Error writing level: {e}")
+                    running = False 
         g.render(screen)
         palette.render(screen)
         
