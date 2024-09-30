@@ -44,13 +44,17 @@ class Grid:
     def loadGrid(self, matrix):
         for y in range(len(matrix)):
             for x in range(len(matrix[0])):
-                if str(matrix[y][x][0]) == "-1":
-                    self.grid[y][x] = Tile("empty", self.tileY, self.tileX,matrix[y][x][1])
+                tup = matrix[y][x]
+                rotation = tup[1]
+                tileIndex = tup[0]
+                if str(tileIndex) == "-1":
+                    self.grid[y][x] = Tile("empty", self.tileY, self.tileX,rotation)
                     continue
                 else:
                     string = str(matrix[y][x][0])
                     zeros = "0" * (4 - len(string))
-                    self.grid[y][x] = Tile(zeros + string, self.tileY, self.tileX,matrix[y][x][1])
+                    final = zeros + string
+                    self.grid[y][x] = Tile(final,self.tileY, self.tileX,matrix[y][x][1])
 
     def render(self, surf):
         for y in range(len(self.grid)):
