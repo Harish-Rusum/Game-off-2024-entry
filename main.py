@@ -1,7 +1,5 @@
 import pygame
 import sys
-from levels.level2 import matrix
-
 pygame.init()
 
 
@@ -17,9 +15,6 @@ clock = pygame.time.Clock()
 
 from utils.grid import Grid
 
-g = Grid(GRID_WIDTH, GRID_HEIGHT, TILE_SIZE, matrix)
-
-
 def main():
     running = True
     while running:
@@ -29,7 +24,6 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        g.render(screen)
 
         pygame.display.flip()
         clock.tick(FPS)
