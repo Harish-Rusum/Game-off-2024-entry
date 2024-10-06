@@ -1,4 +1,23 @@
 import pygame
+import random
+import sys
+
+pygame.init()
+
+TileSize = 40
+ViewX, ViewY = 15, 15
+TilesX, TilesY = 40, 40
+PalWidth = 200
+BufferSpace = 10
+ScreenX, ScreenY = TileSize * ViewX + PalWidth + BufferSpace, TileSize * ViewY
+Fps = 60
+Black = (0, 0, 0)
+
+screen = pygame.display.set_mode((ScreenX, ScreenY))
+pygame.display.set_caption("Tile Grid System")
+clock = pygame.time.Clock()
+
+Matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
 
 class Tile:
     def __init__(self, tileIndex, scaleX, scaleY, rotation):
@@ -14,7 +33,6 @@ class Tile:
             scaled = pygame.transform.smoothscale(loaded, (scaleX, scaleY))
             rotated = pygame.transform.rotate(scaled, (rotation - 1) * -90)
             return rotated
-
 
 class Grid:
     def __init__(self, tilesX, tilesY, tileSize, scrollSpeed, matrix, screenWidth, screenHeight):
@@ -66,55 +84,28 @@ class Grid:
                 screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY))
 
 class Palette:
-    def __init__(self,width,height,palWidth,grid,tileSize):
+    def __init__(self, width, height, palWidth, grid, tileSize):
         self.width = width
         self.palWidth = palWidth
         self.grid = grid
         self.tileSize = tileSize
         self.tilesX = width // tileSize
         self.tilesY = height // tileSize
-    
-    def getTile(self,mouseX,mouseY):
-        if mouseX < self.width - self.palWidth:
-            tileX = (mouseX - TileMap.offX) // self.tileSize
-            tileY = (mouseY - TileMap.offY) // self.tileSize
 
-            if 0 <= tileX < self.grid.tilesX and 0 <= tileY < self.grid.tilesY:
-                return tileX,tileY
-    
-    def render(self):
-        for x in range(1,self.tilesX):
-            for y in range(1,self.tilesY):
-                print(x,y,self.tilesX,self.tilesY)
+    def render(self, surf):
+        for x in range(0, self.tilesX):
+            for y in range(0, self.tilesY):
+                curX = x * self.tileSize + (self.width - self.palWidth)
+                curY = y * self.tileSize
+                square = pygame.Rect(curX, curY, self.tileSize, self.tileSize)
+                pygame.draw.rect(surf, (255, 255, 255), square)
 
-import random
-import sys
+tileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX - PalWidth - BufferSpace, ScreenY)
+picker = Palette(ScreenX, ScreenY, PalWidth, tileMap, TileSize)
 
-pygame.init()
-
-
-TileSize = 40
-ViewX, ViewY = 15, 15
-TilesX, TilesY = 40, 40
-PalWidth = 200
-BufferSpace = 10
-ScreenX, ScreenY = TileSize * ViewX+PalWidth+BufferSpace, TileSize * ViewY
-Fps = 60
-Black = "#000000"
-Matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3]),) for _ in range(TilesX)] for _ in range(TilesY)]
-TileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX-PalWidth-BufferSpace, ScreenY)
-Picker = Palette(ScreenX,ScreenY,PalWidth,TileMap,TileSize)
-
-screen = pygame.display.set_mode((ScreenX, ScreenY))
-pygame.display.set_caption("Tile Grid System")
-clock = pygame.time.Clock()
-
-blackSpace = pygame.rect.Rect(ScreenX - PalWidth,0,PalWidth+BufferSpace,ScreenY)
+blackSpace = pygame.Rect(ScreenX - (PalWidth + BufferSpace), 0, PalWidth , ScreenY)
 
 def main():
-    global PalWidth
-    global ScreenX
-    global blackSpace
     running = True
     while running:
         screen.fill(Black)
@@ -122,27 +113,25 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouseX, mouseY = pygame.mouse.get_pos()
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
-            TileMap.scroll("left")
+            tileMap.scroll("left")
         if keys[pygame.K_d]:
-            TileMap.scroll("right")
+            tileMap.scroll("right")
         if keys[pygame.K_w]:
-            TileMap.scroll("up")
+            tileMap.scroll("up")
         if keys[pygame.K_s]:
-            TileMap.scroll("down")
+            tileMap.scroll("down")
 
-        TileMap.render(screen)
-        pygame.draw.rect(screen,(0,0,0),blackSpace)
+        tileMap.render(screen)
+        pygame.draw.rect(screen, (0, 0, 0), blackSpace)
+        picker.render(screen)
         pygame.display.flip()
         clock.tick(Fps)
 
     pygame.quit()
     sys.exit()
-
 
 if __name__ == "__main__":
     main()
