@@ -7,9 +7,9 @@ pygame.init()
 TileSize = 40
 ViewX, ViewY = 15, 15
 TilesX, TilesY = 40, 40
-PalWidth = 200
-BufferSpace = 10
-ScreenX, ScreenY = TileSize * ViewX + PalWidth + BufferSpace, TileSize * ViewY
+PalWidth = 12 * 40
+ExtraWidth = 10
+ScreenX, ScreenY = TileSize * ViewX + PalWidth + ExtraWidth, TileSize * ViewY
 Fps = 60
 Black = (0, 0, 0)
 
@@ -17,7 +17,7 @@ screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 
-Matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
+Matrix = [[(-1,-1) for _ in range(TilesX)] for _ in range(TilesY)]
 
 class Tile:
     def __init__(self, tileIndex, scaleX, scaleY, rotation):
@@ -29,7 +29,7 @@ class Tile:
             surface.fill((0, 0, 0))
             return surface
         else:
-            loaded = pygame.image.load(f"assets/tile_{tileIndex}.png").convert_alpha()
+            loaded = pygame.image.load(f"assets/tile_{tileIndex}.png")
             scaled = pygame.transform.smoothscale(loaded, (scaleX, scaleY))
             rotated = pygame.transform.rotate(scaled, (rotation - 1) * -90)
             return rotated
@@ -93,17 +93,24 @@ class Palette:
         self.tilesY = height // tileSize
 
     def render(self, surf):
+        num = 0
         for x in range(0, self.tilesX):
             for y in range(0, self.tilesY):
                 curX = x * self.tileSize + (self.width - self.palWidth)
                 curY = y * self.tileSize
-                square = pygame.Rect(curX, curY, self.tileSize, self.tileSize)
-                pygame.draw.rect(surf, (255, 255, 255), square)
+                if num == 180:
+                    continue
+                zeros = 4 - len(str(num))
+                string = "0" * zeros + str(num)
+                loaded = pygame.image.load(f"assets/tile_{string}.png").convert_alpha()
+                scaled = pygame.transform.smoothscale(loaded, (self.tileSize,self.tileSize))
+                surf.blit(scaled,(curX,curY))
+                num += 1
 
-tileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX - PalWidth - BufferSpace, ScreenY)
+tileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX - PalWidth - ExtraWidth, ScreenY)
 picker = Palette(ScreenX, ScreenY, PalWidth, tileMap, TileSize)
 
-blackSpace = pygame.Rect(ScreenX - (PalWidth + BufferSpace), 0, PalWidth , ScreenY)
+blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth , ScreenY)
 
 def main():
     running = True
