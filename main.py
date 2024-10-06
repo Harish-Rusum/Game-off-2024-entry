@@ -1,32 +1,49 @@
 import pygame
+import random
 import sys
+
 pygame.init()
 
 
-TILE_SIZE = 32
-GRID_WIDTH, GRID_HEIGHT = 18, 18
-SCREEN_WIDTH, SCREEN_HEIGHT = TILE_SIZE * GRID_WIDTH, TILE_SIZE * GRID_HEIGHT
-FPS = 60
-BLACK = "#000000"
+TileSize = 40
+ViewX, ViewY = 15, 15
+TilesX, TilesY = 40, 40
+ScreenX, ScreenY = TileSize * ViewX, TileSize * ViewY
+Fps = 60
+Black = "#000000"
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 
-from utils.grid import Grid
+from scripts.grid import Grid
+
+matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3]),) for _ in range(TilesX)] for _ in range(TilesY)]
+grid = Grid(TilesX, TilesY, TileSize, 5, matrix, ScreenX, ScreenY)
+
 
 def main():
     running = True
     while running:
-        screen.fill(BLACK)
+        screen.fill(Black)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a]:
+            grid.scroll("left")
+        if keys[pygame.K_d]:
+            grid.scroll("right")
+        if keys[pygame.K_w]:
+            grid.scroll("up")
+        if keys[pygame.K_s]:
+            grid.scroll("down")
 
+        grid.render(screen)
         pygame.display.flip()
-        clock.tick(FPS)
+        clock.tick(Fps)
 
     pygame.quit()
     sys.exit()
