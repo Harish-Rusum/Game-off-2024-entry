@@ -40,7 +40,7 @@ class Grid:
         self.tilesX = tilesX
         self.tilesY = tilesY
         self.tileSize = tileSize
-        self.grid = [[Tile("empty", tileSize, tileSize, 0) for _ in range(tilesX)] for _ in range(tilesY)]
+        self.grid = [[(-1, 0) for _ in range(tilesX)] for _ in range(tilesY)]
         self.offX = 0
         self.offY = 0
         self.screenHeight = screenHeight
@@ -53,17 +53,7 @@ class Grid:
     def loadGrid(self, matrix):
         for y in range(len(matrix)):
             for x in range(len(matrix[0])):
-                tup = matrix[y][x]
-                rotation = tup[1]
-                tileIndex = tup[0]
-                if str(tileIndex) == "-1":
-                    self.grid[y][x] = Tile("empty", self.tileSize, self.tileSize, rotation)
-                    continue
-                else:
-                    string = str(matrix[y][x][0])
-                    zeros = "0" * (4 - len(string))
-                    final = zeros + string
-                    self.grid[y][x] = Tile(final, self.tileSize, self.tileSize, matrix[y][x][1])
+                self.grid[y][x] = matrix[y][x]
 
     def scroll(self, direction):
         if direction == "left":
@@ -80,8 +70,11 @@ class Grid:
             self.offY = max(-self.clampY, self.offY)
 
     def render(self, screen):
-        for y, row in enumerate(self.grid):
-            for x, tile in enumerate(row):
+        for y in range(self.tilesY):
+            for x in range(self.tilesX):
+                tileIndex, rotation = self.grid[y][x]
+                tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
+                tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY))
 
 
@@ -112,12 +105,12 @@ class Palette:
 
     def getClick(self, mouseX, mouseY, grid):
         if mouseX < (self.width - self.palWidth):
-            adjMouseX = mouseX - tileMap.offX
-            adjMouseY = mouseY - tileMap.offY
+            adjMouseX = mouseX - grid.offX
+            adjMouseY = mouseY - grid.offY
             tileX = adjMouseX // TileSize
             tileY = adjMouseY // TileSize
-            if 0 <= tileX < tileMap.tilesX and 0 <= tileY < tileMap.tilesY:
-                grid.grid[tileY][tileX] = Tile(self.selected, self.tileSize, self.tileSize, 1)
+            if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+                grid.grid[tileY][tileX] = (int(self.selected), 1)
         else:
             adjMouseX = mouseX - (self.width - self.palWidth)
             adjMouseY = mouseY
@@ -126,18 +119,27 @@ class Palette:
             num = (tileX * self.tilesY) + tileY
             zeros = "0" * (4 - len(str(num)))
             self.selected = zeros + str(num)
+    
+    def rotate(self, mouseX, mouseY, grid):
+        adjMouseX = mouseX - grid.offX
+        adjMouseY = mouseY - grid.offY
+        tileX = adjMouseX // TileSize
+        tileY = adjMouseY // TileSize
+        if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+            tileIndex, rotation = grid.grid[tileY][tileX]
+            grid.grid[tileY][tileX] = (tileIndex, (rotation + 1) % 3)
+
 
 tileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX - PalWidth - ExtraWidth, ScreenY)
 picker = Palette(ScreenX, ScreenY, PalWidth, tileMap, TileSize)
 
 blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth, ScreenY)
 
-# Variables to track dragging
 mouse_held = False
-
+r_held = False
 
 def main():
-    global mouse_held
+    global mouse_held,r_held
     running = True
     while running:
         screen.fill(Black)
@@ -147,12 +149,12 @@ def main():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouseX, mouseY = pygame.mouse.get_pos()
-                mouse_held = True  # Start dragging
+                mouse_held = True
                 picker.getClick(mouseX, mouseY, tileMap)
             if event.type == pygame.MOUSEBUTTONUP:
-                mouse_held = False  # Stop dragging
+                mouse_held = False
 
-        if mouse_held:  # If dragging, update the tile under the cursor
+        if mouse_held:
             mouseX, mouseY = pygame.mouse.get_pos()
             picker.getClick(mouseX, mouseY, tileMap)
 
@@ -165,7 +167,13 @@ def main():
             tileMap.scroll("up")
         if keys[pygame.K_s]:
             tileMap.scroll("down")
-
+        if keys[pygame.K_r]:
+            if not r_held:
+                mouseX, mouseY = pygame.mouse.get_pos()
+                picker.rotate(mouseX, mouseY, tileMap)
+                r_held = True
+        if not keys[pygame.K_r]:
+            r_held = False
         tileMap.render(screen)
         pygame.draw.rect(screen, (0, 0, 0), blackSpace)
         picker.render(screen)
