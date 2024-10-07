@@ -29,7 +29,7 @@ class Tile:
             surface.fill((0, 0, 0))
             return surface
         else:
-            loaded = pygame.image.load(f"assets/tile_{tileIndex}.png")
+            loaded = pygame.image.load(f"assets/tile_{tileIndex}.png").convert_alpha()
             scaled = pygame.transform.smoothscale(loaded, (scaleX, scaleY))
             rotated = pygame.transform.rotate(scaled, (rotation - 1) * -90)
             return rotated
@@ -93,7 +93,7 @@ class Palette:
         self.tileSize = tileSize
         self.tilesX = width // tileSize
         self.tilesY = height // tileSize
-        self.selected = None
+        self.selected = -1
 
     def render(self, surf):
         num = 0
@@ -110,16 +110,14 @@ class Palette:
                 surf.blit(scaled, (curX, curY))
                 num += 1
 
-    def getClick(self,mouseX, mouseY):
+    def getClick(self, mouseX, mouseY, grid):
         if mouseX < (self.width - self.palWidth):
             adjMouseX = mouseX - tileMap.offX
             adjMouseY = mouseY - tileMap.offY
             tileX = adjMouseX // TileSize
             tileY = adjMouseY // TileSize
             if 0 <= tileX < tileMap.tilesX and 0 <= tileY < tileMap.tilesY:
-                return tileX, tileY
-            else:
-                return None
+                grid.grid[tileY][tileX] = Tile(self.selected, self.tileSize, self.tileSize, 1)
         else:
             adjMouseX = mouseX - (self.width - self.palWidth)
             adjMouseY = mouseY
@@ -127,18 +125,19 @@ class Palette:
             tileY = adjMouseY // TileSize
             num = (tileX * self.tilesY) + tileY
             zeros = "0" * (4 - len(str(num)))
-            string = zeros + str(num)
-            self.selected = (f"assets/tile_{string}.png")
+            self.selected = zeros + str(num)
 
 tileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX - PalWidth - ExtraWidth, ScreenY)
 picker = Palette(ScreenX, ScreenY, PalWidth, tileMap, TileSize)
 
 blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth, ScreenY)
 
-
+# Variables to track dragging
+mouse_held = False
 
 
 def main():
+    global mouse_held
     running = True
     while running:
         screen.fill(Black)
@@ -148,9 +147,14 @@ def main():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouseX, mouseY = pygame.mouse.get_pos()
-                tile = picker.getClick(mouseX, mouseY)
-                if tile:
-                    print(f"Clicked on tile: {tile}")
+                mouse_held = True  # Start dragging
+                picker.getClick(mouseX, mouseY, tileMap)
+            if event.type == pygame.MOUSEBUTTONUP:
+                mouse_held = False  # Stop dragging
+
+        if mouse_held:  # If dragging, update the tile under the cursor
+            mouseX, mouseY = pygame.mouse.get_pos()
+            picker.getClick(mouseX, mouseY, tileMap)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
