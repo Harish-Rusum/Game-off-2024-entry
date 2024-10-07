@@ -1,5 +1,4 @@
 import pygame
-import random
 import sys
 
 pygame.init()
@@ -17,7 +16,8 @@ screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 
-Matrix = [[(-1,-1) for _ in range(TilesX)] for _ in range(TilesY)]
+Matrix = [[(-1, -1) for _ in range(TilesX)] for _ in range(TilesY)]
+
 
 class Tile:
     def __init__(self, tileIndex, scaleX, scaleY, rotation):
@@ -33,6 +33,7 @@ class Tile:
             scaled = pygame.transform.smoothscale(loaded, (scaleX, scaleY))
             rotated = pygame.transform.rotate(scaled, (rotation - 1) * -90)
             return rotated
+
 
 class Grid:
     def __init__(self, tilesX, tilesY, tileSize, scrollSpeed, matrix, screenWidth, screenHeight):
@@ -83,6 +84,7 @@ class Grid:
             for x, tile in enumerate(row):
                 screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY))
 
+
 class Palette:
     def __init__(self, width, height, palWidth, grid, tileSize):
         self.width = width
@@ -91,6 +93,7 @@ class Palette:
         self.tileSize = tileSize
         self.tilesX = width // tileSize
         self.tilesY = height // tileSize
+        self.selected = None
 
     def render(self, surf):
         num = 0
@@ -103,14 +106,37 @@ class Palette:
                 zeros = 4 - len(str(num))
                 string = "0" * zeros + str(num)
                 loaded = pygame.image.load(f"assets/tile_{string}.png").convert_alpha()
-                scaled = pygame.transform.smoothscale(loaded, (self.tileSize,self.tileSize))
-                surf.blit(scaled,(curX,curY))
+                scaled = pygame.transform.smoothscale(loaded, (self.tileSize, self.tileSize))
+                surf.blit(scaled, (curX, curY))
                 num += 1
+
+    def getClick(self,mouseX, mouseY):
+        if mouseX < (self.width - self.palWidth):
+            adjMouseX = mouseX - tileMap.offX
+            adjMouseY = mouseY - tileMap.offY
+            tileX = adjMouseX // TileSize
+            tileY = adjMouseY // TileSize
+            if 0 <= tileX < tileMap.tilesX and 0 <= tileY < tileMap.tilesY:
+                return tileX, tileY
+            else:
+                return None
+        else:
+            adjMouseX = mouseX - (self.width - self.palWidth)
+            adjMouseY = mouseY
+            tileX = adjMouseX // TileSize
+            tileY = adjMouseY // TileSize
+            num = (tileX * self.tilesY) + tileY
+            zeros = "0" * (4 - len(str(num)))
+            string = zeros + str(num)
+            self.selected = (f"assets/tile_{string}.png")
 
 tileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX - PalWidth - ExtraWidth, ScreenY)
 picker = Palette(ScreenX, ScreenY, PalWidth, tileMap, TileSize)
 
-blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth , ScreenY)
+blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth, ScreenY)
+
+
+
 
 def main():
     running = True
@@ -120,6 +146,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouseX, mouseY = pygame.mouse.get_pos()
+                tile = picker.getClick(mouseX, mouseY)
+                if tile:
+                    print(f"Clicked on tile: {tile}")
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
@@ -139,6 +170,7 @@ def main():
 
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     main()
