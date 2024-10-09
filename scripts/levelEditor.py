@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 pygame.init()
 
@@ -12,6 +13,7 @@ ScreenX, ScreenY = TileSize * ViewX + PalWidth + ExtraWidth, TileSize * ViewY
 Fps = 60
 Black = (0, 0, 0)
 
+filename=f"levels/{input("Enter in a levelname : ")}.py"
 screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
@@ -65,6 +67,21 @@ def main():
                 r_held = True
         if not keys[pygame.K_r]:
             r_held = False
+        if keys[pygame.K_q]:
+            matrix = tileMap.grid
+            directory = os.path.dirname(filename)
+            if directory:
+                os.makedirs(directory, exist_ok=True)
+            try:
+                with open(filename, "w") as f:
+                    f.write("matrix = [\n")
+                    for row in matrix:
+                        f.write(f"    {row},\n")
+                    f.write("]\n")
+                print(f"Level written successfully to {filename}!")
+            except Exception as e:
+                print(f"Error writing level: {e}")
+            running = False
         tileMap.render(screen)
         pygame.draw.rect(screen, (0, 0, 0), blackSpace)
         picker.render(screen)
@@ -77,3 +94,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
