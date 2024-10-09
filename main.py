@@ -1,7 +1,8 @@
 import pygame
 import random
 import sys
-from scripts.grid import Grid
+from scripts.tilemap import Grid
+from levels.level1 import matrix
 
 pygame.init()
 
@@ -16,7 +17,7 @@ screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 
-matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
+# matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
 grid = Grid(TilesX, TilesY, TileSize, 5, matrix, ScreenX, ScreenY)
 
 

@@ -13,7 +13,7 @@ ScreenX, ScreenY = TileSize * ViewX + PalWidth + ExtraWidth, TileSize * ViewY
 Fps = 60
 Black = (0, 0, 0)
 
-filename=f"levels/{input("Enter in a levelname : ")}.py"
+filename="levels/" + input("Enter in a levelname : ") + ".py"
 screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
