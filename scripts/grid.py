@@ -70,3 +70,54 @@ class Grid:
                 tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY))
+
+class Palette:
+    def __init__(self, width, height, palWidth, grid, tileSize):
+        self.width = width
+        self.palWidth = palWidth
+        self.grid = grid
+        self.tileSize = tileSize
+        self.tilesX = width // tileSize
+        self.tilesY = height // tileSize
+        self.selected = -1
+
+    def render(self, surf):
+        num = 0
+        for x in range(0, self.tilesX):
+            for y in range(0, self.tilesY):
+                curX = x * self.tileSize + (self.width - self.palWidth)
+                curY = y * self.tileSize
+                if num == 180:
+                    continue
+                zeros = 4 - len(str(num))
+                string = "0" * zeros + str(num)
+                loaded = pygame.image.load(f"assets/tile_{string}.png").convert_alpha()
+                scaled = pygame.transform.smoothscale(loaded, (self.tileSize, self.tileSize))
+                surf.blit(scaled, (curX, curY))
+                num += 1
+
+    def getClick(self, mouseX, mouseY, grid):
+        if mouseX < (self.width - self.palWidth):
+            adjMouseX = mouseX - grid.offX
+            adjMouseY = mouseY - grid.offY
+            tileX = adjMouseX // self.tileSize
+            tileY = adjMouseY // self.tileSize
+            if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+                grid.grid[tileY][tileX] = (int(self.selected), 1)
+        else:
+            adjMouseX = mouseX - (self.width - self.palWidth)
+            adjMouseY = mouseY
+            tileX = adjMouseX // self.tileSize
+            tileY = adjMouseY // self.tileSize
+            num = (tileX * self.tilesY) + tileY
+            zeros = "0" * (4 - len(str(num)))
+            self.selected = zeros + str(num)
+    
+    def rotate(self, mouseX, mouseY, grid):
+        adjMouseX = mouseX - grid.offX
+        adjMouseY = mouseY - grid.offY
+        tileX = adjMouseX // self.tileSize
+        tileY = adjMouseY // self.tileSize
+        if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+            tileIndex, rotation = grid.grid[tileY][tileX]
+            grid.grid[tileY][tileX] = (tileIndex, (rotation + 1) % 4)
