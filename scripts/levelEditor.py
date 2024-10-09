@@ -18,8 +18,8 @@ clock = pygame.time.Clock()
 
 Matrix = [[(-1, -1) for _ in range(TilesX)] for _ in range(TilesY)]
 
-from grid import Grid
-from grid import Palette
+from tilemap import Grid
+from tilemap import Palette
 
 tileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX - PalWidth - ExtraWidth, ScreenY)
 picker = Palette(ScreenX, ScreenY, PalWidth, tileMap, TileSize)
