@@ -28,11 +28,11 @@ picker = Palette(ScreenX, ScreenY, PalWidth, tileMap, TileSize)
 
 blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth, ScreenY)
 
-mouse_held = False
-r_held = False
+mouseHeld = 0
+rHeld = 0
 
 def main():
-    global mouse_held,r_held
+    global mouseHeld,rHeld
     running = True
     while running:
         screen.fill(Black)
@@ -41,15 +41,32 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                mouseX, mouseY = pygame.mouse.get_pos()
-                mouse_held = True
-                picker.getClick(mouseX, mouseY, tileMap)
-            if event.type == pygame.MOUSEBUTTONUP:
-                mouse_held = False
+                if event.button == 1: 
+                    mouseHeld = 1
+                if event.button ==  2:
+                    mouseHeld = 3
+                if event.button == 3:
+                    mouseHeld = 2
 
-        if mouse_held:
+            if event.type == pygame.MOUSEBUTTONUP:
+                mouseHeld = 0
+
+        if mouseHeld == 1:
             mouseX, mouseY = pygame.mouse.get_pos()
-            picker.getClick(mouseX, mouseY, tileMap)
+            if mouseX < (picker.width - picker.palWidth):
+                picker.tileAction(mouseX, mouseY, tileMap,"replaceTile")
+            else:
+                picker.tileAction(mouseX,mouseY,tileMap,"selectPalette")
+
+        if mouseHeld == 2:
+            mouseX, mouseY = pygame.mouse.get_pos()
+            if mouseX < (picker.width - picker.palWidth):
+                picker.deleteTile(mouseX, mouseY, tileMap)
+
+        if mouseHeld == 3:
+            mouseX, mouseY = pygame.mouse.get_pos()
+            if mouseX < (picker.width - picker.palWidth):
+                picker.tileAction(mouseX, mouseY, tileMap,"selectGrid")
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
@@ -61,12 +78,12 @@ def main():
         if keys[pygame.K_s]:
             tileMap.scroll("down")
         if keys[pygame.K_r]:
-            if not r_held:
+            if rHeld == 0:
                 mouseX, mouseY = pygame.mouse.get_pos()
                 picker.rotate(mouseX, mouseY, tileMap)
-                r_held = True
+                rHeld = 1
         if not keys[pygame.K_r]:
-            r_held = False
+            rHeld = 0
         if keys[pygame.K_q]:
             matrix = tileMap.grid
             directory = os.path.dirname(filename)
@@ -82,6 +99,7 @@ def main():
             except Exception as e:
                 print(f"Error writing level: {e}")
             running = False
+
         tileMap.render(screen)
         pygame.draw.rect(screen, (0, 0, 0), blackSpace)
         picker.render(screen)

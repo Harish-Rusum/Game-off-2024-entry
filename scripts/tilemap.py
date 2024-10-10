@@ -96,15 +96,17 @@ class Palette:
                 surf.blit(scaled, (curX, curY))
                 num += 1
 
-    def getClick(self, mouseX, mouseY, grid):
-        if mouseX < (self.width - self.palWidth):
-            adjMouseX = mouseX - grid.offX
-            adjMouseY = mouseY - grid.offY
-            tileX = adjMouseX // self.tileSize
-            tileY = adjMouseY // self.tileSize
-            if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
-                grid.grid[tileY][tileX] = (int(self.selected), 1)
-        else:
+    def tileAction(self, mouseX, mouseY, grid,action):
+        if action == "replaceTile":
+            if mouseX < (self.width - self.palWidth):
+                adjMouseX = mouseX - grid.offX
+                adjMouseY = mouseY - grid.offY
+                tileX = adjMouseX // self.tileSize
+                tileY = adjMouseY // self.tileSize
+                if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+                    grid.grid[tileY][tileX] = (int(self.selected), 1)
+
+        if action == "selectPalette":
             adjMouseX = mouseX - (self.width - self.palWidth)
             adjMouseY = mouseY
             tileX = adjMouseX // self.tileSize
@@ -112,7 +114,25 @@ class Palette:
             num = (tileX * self.tilesY) + tileY
             zeros = "0" * (4 - len(str(num)))
             self.selected = zeros + str(num)
-    
+
+        if action == "selectGrid":
+            adjMouseX = mouseX - grid.offX
+            adjMouseY = mouseY - grid.offY
+            tileX = adjMouseX // self.tileSize
+            tileY = adjMouseY // self.tileSize
+            num = grid.grid[tileY][tileX][0]
+            zeros = "0" * (4 - len(str(num)))
+            self.selected = zeros + str(num)
+
+    def deleteTile(self, mouseX,mouseY,grid): 
+        if mouseX < (self.width - self.palWidth):
+            adjMouseX = mouseX - grid.offX
+            adjMouseY = mouseY - grid.offY
+            tileX = adjMouseX // self.tileSize
+            tileY = adjMouseY // self.tileSize
+            if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+                grid.grid[tileY][tileX] = (-1, -1)
+
     def rotate(self, mouseX, mouseY, grid):
         adjMouseX = mouseX - grid.offX
         adjMouseY = mouseY - grid.offY
