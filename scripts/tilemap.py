@@ -124,8 +124,7 @@ class Palette:
             zeros = "0" * (4 - len(str(num)))
             self.selected = zeros + str(num)
 
-    def deleteTile(self, mouseX,mouseY,grid): 
-        if mouseX < (self.width - self.palWidth):
+        if action == "deleteTile":
             adjMouseX = mouseX - grid.offX
             adjMouseY = mouseY - grid.offY
             tileX = adjMouseX // self.tileSize

@@ -61,7 +61,7 @@ def main():
         if mouseHeld == 2:
             mouseX, mouseY = pygame.mouse.get_pos()
             if mouseX < (picker.width - picker.palWidth):
-                picker.deleteTile(mouseX, mouseY, tileMap)
+                picker.tileAction(mouseX, mouseY, tileMap,"deleteTile")
 
         if mouseHeld == 3:
             mouseX, mouseY = pygame.mouse.get_pos()
