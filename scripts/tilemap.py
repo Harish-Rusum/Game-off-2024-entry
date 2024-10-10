@@ -27,13 +27,11 @@ class Tile:
 
 
 class Grid:
-    def __init__(
-        self, tilesX, tilesY, tileSize, scrollSpeed, matrix, screenWidth, screenHeight
-    ):
+    def __init__(self, tilesX, tilesY, tileSize, scrollSpeed, matrix, screenWidth, screenHeight):
         self.tilesX = tilesX
         self.tilesY = tilesY
         self.tileSize = tileSize
-        self.grid = [[(-1, 0) for _ in range(tilesX)] for _ in range(tilesY)]
+        self.grid = [[[(-1, -1),(-1, -1)] for _ in range(tilesX)] for _ in range(tilesY)]
         self.offX = 0
         self.offY = 0
         self.screenHeight = screenHeight
@@ -46,7 +44,8 @@ class Grid:
     def loadGrid(self, matrix):
         for y in range(len(matrix)):
             for x in range(len(matrix[0])):
-                self.grid[y][x] = matrix[y][x]
+                self.grid[y][x][0] = matrix[y][x][0]
+                self.grid[y][x][1] = matrix[y][x][1]
 
     def scroll(self, direction):
         if direction == "left":
@@ -70,8 +69,17 @@ class Grid:
 
         for y in range(startY, endY):
             for x in range(startX, endX):
-                tileIndex, rotation = self.grid[y][x]
+                tileIndex, rotation = self.grid[y][x][0]
                 tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
+                tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
+                screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY,))
+
+        for y in range(startY, endY):
+            for x in range(startX, endX):
+                tileIndex, rotation = self.grid[y][x][1]
+                if tileIndex == -1:
+                    continue
+                tileIndexStr = f"{tileIndex:04d}"
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY,))
 
@@ -85,6 +93,24 @@ class Palette:
         self.tilesX = width // tileSize
         self.tilesY = height // tileSize
         self.selected = -1
+        self.decorTiles = {
+            32,
+            44,
+            45,
+            46,
+            27,
+            84,
+            85,
+            86,
+            87,
+            88,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+        }
 
     def render(self, surf):
         num = 0
@@ -111,8 +137,12 @@ class Palette:
                 adjMouseY = mouseY - grid.offY
                 tileX = adjMouseX // self.tileSize
                 tileY = adjMouseY // self.tileSize
-                if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
-                    grid.grid[tileY][tileX] = (int(self.selected), 1)
+                if int(self.selected) in self.decorTiles:
+                    if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+                        grid.grid[tileY][tileX][1] = (int(self.selected), 1)
+                else:
+                    if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+                        grid.grid[tileY][tileX][0] = (int(self.selected), 1)
 
         if action == "selectPalette":
             adjMouseX = mouseX - (self.width - self.palWidth)
@@ -128,7 +158,7 @@ class Palette:
             adjMouseY = mouseY - grid.offY
             tileX = adjMouseX // self.tileSize
             tileY = adjMouseY // self.tileSize
-            num = grid.grid[tileY][tileX][0]
+            num = grid.grid[tileY][tileX][0][0]
             zeros = "0" * (4 - len(str(num)))
             self.selected = zeros + str(num)
 
@@ -138,7 +168,8 @@ class Palette:
             tileX = adjMouseX // self.tileSize
             tileY = adjMouseY // self.tileSize
             if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
-                grid.grid[tileY][tileX] = (-1, -1)
+                grid.grid[tileY][tileX][0] = (-1, -1)
+                grid.grid[tileY][tileX][1] = (-1, -1)
 
     def rotate(self, mouseX, mouseY, grid):
         adjMouseX = mouseX - grid.offX
@@ -146,5 +177,5 @@ class Palette:
         tileX = adjMouseX // self.tileSize
         tileY = adjMouseY // self.tileSize
         if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
-            tileIndex, rotation = grid.grid[tileY][tileX]
-            grid.grid[tileY][tileX] = (tileIndex, (rotation + 1) % 4)
+            tileIndex, rotation = grid.grid[tileY][tileX][0]
+            grid.grid[tileY][tileX][0] = (tileIndex, (rotation + 1) % 4)

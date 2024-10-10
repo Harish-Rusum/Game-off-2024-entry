@@ -18,7 +18,7 @@ screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 
-Matrix = [[(-1, -1) for _ in range(TilesX)] for _ in range(TilesY)]
+Matrix = [[[(-1, -1),(-1, -1)] for _ in range(TilesX)] for _ in range(TilesY)]
 
 from tilemap import Grid
 from tilemap import Palette
@@ -30,10 +30,10 @@ blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth, ScreenY
 
 mouseHeld = 0
 rHeld = 0
-
+decorMode = 0
 
 def main():
-    global mouseHeld, rHeld
+    global mouseHeld, rHeld,decorMode
     running = True
     while running:
         screen.fill(Black)
@@ -78,6 +78,7 @@ def main():
             tileMap.scroll("up")
         if keys[pygame.K_s]:
             tileMap.scroll("down")
+
         if keys[pygame.K_r]:
             if rHeld == 0:
                 mouseX, mouseY = pygame.mouse.get_pos()
