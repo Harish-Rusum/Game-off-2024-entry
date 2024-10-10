@@ -2,6 +2,7 @@ import pygame
 
 tile_cache = {}
 
+
 class Tile:
     def __init__(self, tileIndex, scaleX, scaleY, rotation):
         self.img = self.getImg(tileIndex, scaleX, scaleY, rotation)
@@ -15,7 +16,7 @@ class Tile:
 
         if tileIndex == "empty":
             surface = pygame.Surface((scaleX, scaleY))
-            surface.fill((0, 0, 0))  
+            surface.fill((0, 0, 0))
         else:
             loaded = pygame.image.load(f"assets/tile_{tileIndex}.png").convert_alpha()
             scaled = pygame.transform.smoothscale(loaded, (scaleX, scaleY))
@@ -24,12 +25,15 @@ class Tile:
         tile_cache[cache_key] = surface
         return surface
 
+
 class Grid:
-    def __init__(self, tilesX, tilesY, tileSize, scrollSpeed, matrix, screenWidth, screenHeight):
+    def __init__(
+        self, tilesX, tilesY, tileSize, scrollSpeed, matrix, screenWidth, screenHeight
+    ):
         self.tilesX = tilesX
         self.tilesY = tilesY
         self.tileSize = tileSize
-        self.grid = [[(-1, 0) for _ in range(tilesX)] for _ in range(tilesY)]  
+        self.grid = [[(-1, 0) for _ in range(tilesX)] for _ in range(tilesY)]
         self.offX = 0
         self.offY = 0
         self.screenHeight = screenHeight
@@ -69,7 +73,8 @@ class Grid:
                 tileIndex, rotation = self.grid[y][x]
                 tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
-                screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY))
+                screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY,))
+
 
 class Palette:
     def __init__(self, width, height, palWidth, grid, tileSize):
@@ -92,11 +97,14 @@ class Palette:
                 zeros = 4 - len(str(num))
                 string = "0" * zeros + str(num)
                 loaded = pygame.image.load(f"assets/tile_{string}.png").convert_alpha()
-                scaled = pygame.transform.smoothscale(loaded, (self.tileSize, self.tileSize))
+                scaled = pygame.transform.smoothscale(loaded, (self.tileSize, self.tileSize,))
                 surf.blit(scaled, (curX, curY))
+                if num == int(self.selected):
+                    white = "#FFFFFF"
+                    pygame.draw.rect(surf, white, (curX, curY, self.tileSize, self.tileSize), 4, border_radius=3)
                 num += 1
 
-    def tileAction(self, mouseX, mouseY, grid,action):
+    def tileAction(self, mouseX, mouseY, grid, action):
         if action == "replaceTile":
             if mouseX < (self.width - self.palWidth):
                 adjMouseX = mouseX - grid.offX

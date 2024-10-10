@@ -13,7 +13,7 @@ ScreenX, ScreenY = TileSize * ViewX + PalWidth + ExtraWidth, TileSize * ViewY
 Fps = 60
 Black = (0, 0, 0)
 
-filename="levels/" + input("Enter in a levelname : ") + ".py"
+filename = "levels/" + input("Enter in a levelname : ") + ".py"
 screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
@@ -31,8 +31,9 @@ blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth, ScreenY
 mouseHeld = 0
 rHeld = 0
 
+
 def main():
-    global mouseHeld,rHeld
+    global mouseHeld, rHeld
     running = True
     while running:
         screen.fill(Black)
@@ -41,9 +42,9 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1: 
+                if event.button == 1:
                     mouseHeld = 1
-                if event.button ==  2:
+                if event.button == 2:
                     mouseHeld = 3
                 if event.button == 3:
                     mouseHeld = 2
@@ -54,19 +55,19 @@ def main():
         if mouseHeld == 1:
             mouseX, mouseY = pygame.mouse.get_pos()
             if mouseX < (picker.width - picker.palWidth):
-                picker.tileAction(mouseX, mouseY, tileMap,"replaceTile")
+                picker.tileAction(mouseX, mouseY, tileMap, "replaceTile")
             else:
-                picker.tileAction(mouseX,mouseY,tileMap,"selectPalette")
+                picker.tileAction(mouseX, mouseY, tileMap, "selectPalette")
 
         if mouseHeld == 2:
             mouseX, mouseY = pygame.mouse.get_pos()
             if mouseX < (picker.width - picker.palWidth):
-                picker.tileAction(mouseX, mouseY, tileMap,"deleteTile")
+                picker.tileAction(mouseX, mouseY, tileMap, "deleteTile")
 
         if mouseHeld == 3:
             mouseX, mouseY = pygame.mouse.get_pos()
             if mouseX < (picker.width - picker.palWidth):
-                picker.tileAction(mouseX, mouseY, tileMap,"selectGrid")
+                picker.tileAction(mouseX, mouseY, tileMap, "selectGrid")
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
@@ -112,4 +113,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
