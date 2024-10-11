@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 from scripts.tilemap import Grid
-from levels.level1 import matrix
+from levels.thing import matrix
 
 pygame.init()
 
