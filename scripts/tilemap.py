@@ -4,7 +4,7 @@ tile_cache = {}
 
 
 class Tile:
-    def __init__(self, tileIndex, scaleX, scaleY, rotation):
+    def __init__(self, tileIndex, scaleX, scaleY, rotation) -> None:
         self.img = self.getImg(tileIndex, scaleX, scaleY, rotation)
 
     def getImg(self, tileIndex, scaleX, scaleY, rotation):
@@ -19,6 +19,7 @@ class Tile:
             surface.fill((0, 0, 0))
         else:
             loaded = pygame.image.load(f"assets/tile_{tileIndex}.png").convert_alpha()
+            # loaded = pygame.image.load(f"assets/tile_0000.png").convert_alpha()
             scaled = pygame.transform.smoothscale(loaded, (scaleX, scaleY))
             surface = pygame.transform.rotate(scaled, (rotation - 1) * -90)
 
@@ -159,6 +160,8 @@ class Palette:
             tileX = adjMouseX // self.tileSize
             tileY = adjMouseY // self.tileSize
             num = grid.grid[tileY][tileX][0][0]
+            if num == -1:
+                return
             zeros = "0" * (4 - len(str(num)))
             self.selected = zeros + str(num)
 
