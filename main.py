@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 from scripts.tilemap import Grid
+from utils.fov import Overlay
 from levels.thing import matrix
 
 pygame.init()
@@ -19,7 +20,7 @@ clock = pygame.time.Clock()
 
 # matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
 grid = Grid(TilesX, TilesY, TileSize, 5, matrix, ScreenX, ScreenY)
-
+fov = Overlay(ScreenX,ScreenY,200,[ScreenX // 2, ScreenY // 2])
 
 def main():
     running = True
@@ -41,6 +42,7 @@ def main():
             grid.scroll("down")
 
         grid.render(screen)
+        fov.render(screen)
         pygame.display.flip()
         clock.tick(Fps)
 
