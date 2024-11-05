@@ -1,7 +1,7 @@
 import pygame
-import random
 import sys
 from scripts.tilemap import Grid
+from scripts.player import Player
 from utils.fov import Overlay
 from levels.thing import matrix
 
@@ -21,34 +21,47 @@ clock = pygame.time.Clock()
 # matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
 grid = Grid(TilesX, TilesY, TileSize, 5, matrix, ScreenX, ScreenY)
 fov = Overlay(ScreenX,ScreenY,200,[ScreenX // 2, ScreenY // 2])
+p = Player(0,0,TileSize)
 
 def main():
     running = True
     while running:
         screen.fill(Black)
+        
+        right, left = 0, 0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mousex,mousey = pygame.mouse.get_pos()
+                print(grid.getSurroundingTiles(mousex,mousey))
         keys = pygame.key.get_pressed()
+        
         if keys[pygame.K_a]:
-            grid.scroll("left")
-        if keys[pygame.K_d]:
-            grid.scroll("right")
+            right = -5
+        elif keys[pygame.K_d]:
+            right = 5
+        
         if keys[pygame.K_w]:
-            grid.scroll("up")
-        if keys[pygame.K_s]:
-            grid.scroll("down")
+            left = -5
+        elif keys[pygame.K_s]:
+            left = 5
+
+        if keys[pygame.K_UP]:
+            fov.FovRad += 5
+        if keys[pygame.K_DOWN]:
+            fov.FovRad -= 5
 
         grid.render(screen)
-        fov.render(screen)
+
+        p.move(right, left, grid, screen)
+        # fov.render(screen)
+        p.render(screen,grid)
         pygame.display.flip()
         clock.tick(Fps)
 
     pygame.quit()
     sys.exit()
-
-
 if __name__ == "__main__":
     main()

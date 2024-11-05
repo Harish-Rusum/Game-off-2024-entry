@@ -6,6 +6,7 @@ tile_cache = {}
 class Tile:
     def __init__(self, tileIndex, scaleX, scaleY, rotation) -> None:
         self.img = self.getImg(tileIndex, scaleX, scaleY, rotation)
+        self.rect = self.img.get_rect()
 
     def getImg(self, tileIndex, scaleX, scaleY, rotation):
         global tile_cache
@@ -32,7 +33,7 @@ class Grid:
         self.tilesX = tilesX
         self.tilesY = tilesY
         self.tileSize = tileSize
-        self.grid = [[[(-1, -1),(-1, -1)] for _ in range(tilesX)] for _ in range(tilesY)]
+        self.grid = [[[(-1, -1),(-1, -1),(0, 0)] for _ in range(tilesX)] for _ in range(tilesY)]
         self.offX = 0
         self.offY = 0
         self.screenHeight = screenHeight
@@ -41,6 +42,7 @@ class Grid:
         self.loadGrid(matrix)
         self.clampY = (self.tilesY - (self.screenHeight / self.tileSize)) * self.tileSize
         self.clampX = (self.tilesX - (self.screenWidth / self.tileSize)) * self.tileSize
+        self.lock = False
 
     def loadGrid(self, matrix):
         for y in range(len(matrix)):
@@ -49,6 +51,8 @@ class Grid:
                 self.grid[y][x][1] = matrix[y][x][1]
 
     def scroll(self, direction):
+        if self.lock:
+            return
         if direction == "left":
             self.offX += self.scrollSpeed
             self.offX = min(0, self.offX)
@@ -73,16 +77,26 @@ class Grid:
                 tileIndex, rotation = self.grid[y][x][0]
                 tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
-                screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY,))
+                self.grid[y][x][2] = (x * self.tileSize + self.offX, y * self.tileSize + self.offY,)
+                screen.blit(tile.img, (self.grid[y][x][2]))
 
-        for y in range(startY, endY):
-            for x in range(startX, endX):
-                tileIndex, rotation = self.grid[y][x][1]
-                if tileIndex == -1:
-                    continue
-                tileIndexStr = f"{tileIndex:04d}"
-                tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
-                screen.blit(tile.img, (x * self.tileSize + self.offX, y * self.tileSize + self.offY,))
+    def getSurroundingTiles(self, screen_x, screen_y):
+        world_x = screen_x - self.offX
+        world_y = screen_y - self.offY
+        
+        center_tile_x = world_x // self.tileSize
+        center_tile_y = world_y // self.tileSize
+
+        surrounding_tiles = []
+        for dy in range(-1, 2):
+            for dx in range(-1, 2):
+                tile_x = int(center_tile_x + dx)
+                tile_y = int(center_tile_y + dy)
+                
+                if 0 <= tile_x < self.tilesX and 0 <= tile_y < self.tilesY:
+                    surrounding_tiles.append(self.grid[tile_y][tile_x])
+        
+        return surrounding_tiles
 
 
 class Palette:
@@ -182,3 +196,4 @@ class Palette:
         if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
             tileIndex, rotation = grid.grid[tileY][tileX][0]
             grid.grid[tileY][tileX][0] = (tileIndex, (rotation + 1) % 4)
+
