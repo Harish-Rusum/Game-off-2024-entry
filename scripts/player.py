@@ -1,7 +1,5 @@
 import pygame
-from scripts.tilemap import Tile
-
-
+from utils.spritesheet import SpriteSheet
 class Player:
     def __init__(self, x, y, tileSize):
         self.img = pygame.image.load("assets/Characters/tile_0000.png").convert_alpha()
@@ -12,38 +10,25 @@ class Player:
         self.rect = self.img.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        self.state = 0
+        self.spriteSheet = SpriteSheet()
+        self.sheet = self.spriteSheet.split("assets/Characters/sheet.png",1,4,24,24)
+        self.frame = 0
+        self.animationFrames = 4
+        self.direction = 0
 
-    def render(self, surf,grid):
-        surf.blit(self.img, (self.x, self.y))
+    def render(self, surf):
+        img = self.sheet[self.frame]
+        img = pygame.transform.smoothscale(img, (40, 40))
+        if self.direction == -1:
+            img = pygame.transform.rotate(img, -180)
+            img = pygame.transform.flip(img, False, True)
+        surf.blit(img, (self.x, self.y))
 
-    # def move(self, dx, dy, grid,surf):
-    #     surrounding = grid.getSurroundingTiles(self.x,self.y)
-    #
-    #     for element in surrounding:
-    #         if element[0][0] == -1:
-    #             continue
-    #         rect = pygame.rect.Rect(element[2][0],element[2][1],grid.tileSize,grid.tileSize)
-    #         if self.rect.colliderect(rect):
-    #             if dx < 0:
-    #                 if rect.x < self.x:
-    #                     return
-    #             if dx > 0:
-    #                 if rect.x > self.x:
-    #                     return
-    #             if dy > 0:
-    #                 if rect.y > self.y:
-    #                     return
-    #             if dy < 0:
-    #                 if rect.y < self.y:
-    #                     return
-    #
-    #     self.x += dx
-    #     self.y += dy
-    #     self.rect.x = self.x
-    #     self.rect.y = self.y
-    #
-
-    def move(self, dx, dy, grid, surf):
+    def move(self, dx, dy, grid):
+        if dx > 0: self.direction = 0
+        if dx < 0: self.direction = -1
+        self.frame = (self.frame + 1) % self.animationFrames
         surrounding = grid.getSurroundingTiles(self.x, self.y)
         
         newX = self.x + dx

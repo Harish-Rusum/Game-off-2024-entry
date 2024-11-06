@@ -33,9 +33,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mousex,mousey = pygame.mouse.get_pos()
-                print(grid.getSurroundingTiles(mousex,mousey))
+
         keys = pygame.key.get_pressed()
         
         if keys[pygame.K_a]:
@@ -55,9 +53,9 @@ def main():
 
         grid.render(screen)
 
-        p.move(right, left, grid, screen)
+        p.move(right, left, grid)
         # fov.render(screen)
-        p.render(screen,grid)
+        p.render(screen)
         pygame.display.flip()
         clock.tick(Fps)
 
