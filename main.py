@@ -20,14 +20,15 @@ clock = pygame.time.Clock()
 
 # matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
 grid = Grid(TilesX, TilesY, TileSize, 5, matrix, ScreenX, ScreenY)
-fov = Overlay(ScreenX,ScreenY,200,[ScreenX // 2, ScreenY // 2])
-p = Player(0,0,TileSize)
+fov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
+p = Player(0, 0, 40, 40)
+
 
 def main():
     running = True
     while running:
         screen.fill(Black)
-        
+
         right, left = 0, 0
 
         for event in pygame.event.get():
@@ -35,12 +36,12 @@ def main():
                 running = False
 
         keys = pygame.key.get_pressed()
-        
+
         if keys[pygame.K_a]:
             right = -5
         elif keys[pygame.K_d]:
             right = 5
-        
+
         if keys[pygame.K_w]:
             left = -5
         elif keys[pygame.K_s]:
@@ -54,12 +55,15 @@ def main():
         grid.render(screen)
 
         p.move(right, left, grid)
-        # fov.render(screen)
+        fov.update([p.x + 20, p.y + 20])
         p.render(screen)
+        fov.render(screen)
         pygame.display.flip()
         clock.tick(Fps)
 
     pygame.quit()
     sys.exit()
+
+
 if __name__ == "__main__":
     main()

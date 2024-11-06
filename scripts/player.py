@@ -1,25 +1,28 @@
 import pygame
 from utils.spritesheet import SpriteSheet
 class Player:
-    def __init__(self, x, y, tileSize):
-        self.img = pygame.image.load("assets/Characters/tile_0000.png").convert_alpha()
-        self.img = pygame.transform.smoothscale(self.img, (tileSize, tileSize))
+    def __init__(self, x, y, playerX, playerY):
         self.rotation = -1
         self.x = x
         self.y = y
-        self.rect = self.img.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
         self.state = 0
         self.spriteSheet = SpriteSheet()
         self.sheet = self.spriteSheet.split("assets/Characters/sheet.png",1,4,24,24)
         self.frame = 0
         self.animationFrames = 4
         self.direction = 0
+        self.counter = 0
+        self.playerX = playerX
+        self.playerY = playerY
+        self.img = self.sheet[self.frame]
+        self.img = pygame.transform.smoothscale(self.img, (self.playerX, self.playerY))
+        self.rect = self.img.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
     def render(self, surf):
         img = self.sheet[self.frame]
-        img = pygame.transform.smoothscale(img, (40, 40))
+        img = pygame.transform.smoothscale(img, (self.playerX, self.playerY))
         if self.direction == -1:
             img = pygame.transform.rotate(img, -180)
             img = pygame.transform.flip(img, False, True)
@@ -28,7 +31,10 @@ class Player:
     def move(self, dx, dy, grid):
         if dx > 0: self.direction = 0
         if dx < 0: self.direction = -1
-        self.frame = (self.frame + 1) % self.animationFrames
+        if self.counter % 10 == 0:
+            self.frame = (self.frame + 1) % self.animationFrames
+        self.counter = (self.counter + 1) % 100000
+
         surrounding = grid.getSurroundingTiles(self.x, self.y)
         
         newX = self.x + dx
