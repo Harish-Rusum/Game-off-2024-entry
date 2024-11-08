@@ -2,6 +2,7 @@ import pygame
 import sys
 from scripts.tilemap import Grid
 from scripts.player import Player
+from scripts.cursor import Cursor
 from utils.fov import Overlay
 from levels.thing import matrix
 
@@ -17,11 +18,13 @@ Black = "#000000"
 screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
-
+pygame.mouse.set_visible(False)
 # matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
 grid = Grid(TilesX, TilesY, TileSize, 5, matrix, ScreenX, ScreenY)
 fov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
+mousefov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
 p = Player(0, 0, 40, 40)
+cursor = Cursor()
 
 
 def main():
@@ -53,11 +56,14 @@ def main():
             fov.FovRad -= 5
 
         grid.render(screen)
-
         p.move(right, left, grid)
         fov.update([p.x + 20, p.y + 20])
         p.render(screen)
-        fov.render(screen)
+        # fov.render(screen)
+        mousex,mousey = pygame.mouse.get_pos()
+        mousefov.update([mousex,mousey])
+        mousefov.render(screen)
+        cursor.render(screen)
         pygame.display.flip()
         clock.tick(Fps)
 
