@@ -4,113 +4,111 @@ import os
 
 pygame.init()
 
-TileSize = 40
-ViewX, ViewY = 15, 15
-TilesX, TilesY = 40, 40
-PalWidth = 12 * 40
-ExtraWidth = 10
-ScreenX, ScreenY = TileSize * ViewX + PalWidth + ExtraWidth, TileSize * ViewY
-Fps = 60
-Black = (0, 0, 0)
+tileSize = 35
+viewX, viewY = 20, 15
+tilesX, tilesY = 40, 40
+palWidth = 12 * tileSize
+bufferWidth = 10
+screenX, screenY = tileSize * viewX + palWidth + bufferWidth, tileSize * viewY
+fps = 60
+black = (0, 0, 0)
 
-filename = "levels/" + input("Enter in a levelname : ") + ".py"
-screen = pygame.display.set_mode((ScreenX, ScreenY))
+filename = f"levels/{input('Enter a level name: ')}.py"
+
+screen = pygame.display.set_mode((screenX, screenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 
-Matrix = [[[(-1, -1),(-1, -1)] for _ in range(TilesX)] for _ in range(TilesY)]
+matrix = [[[(-1, -1), (-1, -1)] for _ in range(tilesX)] for _ in range(tilesY)]
 
-from tilemap import Grid
-from tilemap import Palette
+from tilemap import Grid, Palette
 
-tileMap = Grid(TilesX, TilesY, TileSize, 5, Matrix, ScreenX - PalWidth - ExtraWidth, ScreenY)
-picker = Palette(ScreenX, ScreenY, PalWidth, tileMap, TileSize)
+tileMap = Grid(tilesX, tilesY, tileSize, matrix, screenX - palWidth - bufferWidth, screenY)
+picker = Palette(screenX, screenY, palWidth, tileMap, tileSize)
 
-blackSpace = pygame.Rect(ScreenX - (PalWidth + ExtraWidth), 0, PalWidth, ScreenY)
+paletteArea = pygame.Rect(screenX - (palWidth + bufferWidth), 0, palWidth, screenY)
 
 mouseHeld = 0
-rHeld = 0
-decorMode = 0
+rotateHeld = False
 
 def main():
-    global mouseHeld, rHeld,decorMode
+    global mouseHeld, rotateHeld
     running = True
+
     while running:
-        screen.fill(Black)
+        screen.fill(black)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    mouseHeld = 1
-                if event.button == 2:
+                    mouseHeld = 1 
+                elif event.button == 2:
                     mouseHeld = 3
-                if event.button == 3:
+                elif event.button == 3:
                     mouseHeld = 2
-
-            if event.type == pygame.MOUSEBUTTONUP:
+            elif event.type == pygame.MOUSEBUTTONUP:
                 mouseHeld = 0
 
-        if mouseHeld == 1:
-            mouseX, mouseY = pygame.mouse.get_pos()
-            if mouseX < (picker.width - picker.palWidth):
-                picker.tileAction(mouseX, mouseY, tileMap, "replaceTile")
-            else:
-                picker.tileAction(mouseX, mouseY, tileMap, "selectPalette")
+        handleMouse()
 
-        if mouseHeld == 2:
-            mouseX, mouseY = pygame.mouse.get_pos()
-            if mouseX < (picker.width - picker.palWidth):
-                picker.tileAction(mouseX, mouseY, tileMap, "deleteTile")
-
-        if mouseHeld == 3:
-            mouseX, mouseY = pygame.mouse.get_pos()
-            if mouseX < (picker.width - picker.palWidth):
-                picker.tileAction(mouseX, mouseY, tileMap, "selectGrid")
-
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
-            tileMap.scroll("left")
-        if keys[pygame.K_d]:
-            tileMap.scroll("right")
-        if keys[pygame.K_w]:
-            tileMap.scroll("up")
-        if keys[pygame.K_s]:
-            tileMap.scroll("down")
-
-        if keys[pygame.K_r]:
-            if rHeld == 0:
-                mouseX, mouseY = pygame.mouse.get_pos()
-                picker.rotate(mouseX, mouseY, tileMap)
-                rHeld = 1
-        if not keys[pygame.K_r]:
-            rHeld = 0
-        if keys[pygame.K_q]:
-            matrix = tileMap.grid
-            directory = os.path.dirname(filename)
-            if directory:
-                os.makedirs(directory, exist_ok=True)
-            try:
-                with open(filename, "w") as f:
-                    f.write("matrix = [\n")
-                    for row in matrix:
-                        f.write(f"    {row},\n")
-                    f.write("]\n")
-                print(f"Level written successfully to {filename}!")
-            except Exception as e:
-                print(f"Error writing level: {e}")
-            running = False
+        handleKeyboard()
 
         tileMap.render(screen)
-        pygame.draw.rect(screen, (0, 0, 0), blackSpace)
+        pygame.draw.rect(screen, black, paletteArea)
         picker.render(screen)
+
         pygame.display.flip()
-        clock.tick(Fps)
+        clock.tick(fps)
 
     pygame.quit()
     sys.exit()
 
+def handleMouse():
+    global mouseHeld
+    mouseX, mouseY = pygame.mouse.get_pos()
+    if mouseHeld == 0:
+        return
+    if mouseHeld == 1 and mouseX < (picker.width - picker.palWidth):
+        picker.tileAction(mouseX, mouseY, tileMap, "replaceTile")
+    elif mouseHeld == 2 and mouseX < (picker.width - picker.palWidth):
+        picker.tileAction(mouseX, mouseY, tileMap, "deleteTile")
+    elif mouseHeld == 3 and mouseX < (picker.width - picker.palWidth):
+        picker.tileAction(mouseX, mouseY, tileMap, "selectGrid")
+    elif mouseX >= (picker.width - picker.palWidth):
+        picker.tileAction(mouseX, mouseY, tileMap, "selectPalette")
+
+def handleKeyboard():
+    global rotateHeld
+
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_r] and not rotateHeld:
+        mouseX, mouseY = pygame.mouse.get_pos()
+        picker.rotate(mouseX, mouseY, tileMap)
+        rotateHeld = True
+    if not keys[pygame.K_r]:
+        rotateHeld = False
+
+    if keys[pygame.K_q]:
+        save_level()
+        pygame.quit()
+        sys.exit()
+
+def save_level():
+    try:
+        directory = os.path.dirname(filename)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        with open(filename, "w") as file:
+            file.write("matrix = [\n")
+            for row in tileMap.grid:
+                file.write(f"    {row},\n")
+            file.write("]\n")
+        print(f"Level successfully saved to {filename}!")
+    except Exception as e:
+        print(f"Error saving level: {e}")
 
 if __name__ == "__main__":
     main()

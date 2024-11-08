@@ -8,8 +8,8 @@ from levels.thing import matrix
 
 pygame.init()
 
-TileSize = 40
-ViewX, ViewY = 15, 15
+TileSize = 35
+ViewX, ViewY = 20, 15
 TilesX, TilesY = 40, 40
 ScreenX, ScreenY = TileSize * ViewX, TileSize * ViewY
 Fps = 60
@@ -19,11 +19,9 @@ screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
-# matrix = [[(random.choice([x for x in range(1, 180)]), random.choice([-1, 1, 2, 3])) for _ in range(TilesX)] for _ in range(TilesY)]
-grid = Grid(TilesX, TilesY, TileSize, 5, matrix, ScreenX, ScreenY)
-fov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
+grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
 mousefov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
-p = Player(0, 0, 40, 40)
+p = Player(0, 0, 35, 35)
 cursor = Cursor()
 
 
@@ -51,15 +49,14 @@ def main():
             left = 5
 
         if keys[pygame.K_UP]:
-            fov.FovRad += 5
+            mousefov.FovRad += 5
         if keys[pygame.K_DOWN]:
-            fov.FovRad -= 5
+            mousefov.FovRad -= 5
 
+        screen.fill("#000000")        
         grid.render(screen)
         p.move(right, left, grid)
-        fov.update([p.x + 20, p.y + 20])
         p.render(screen)
-        # fov.render(screen)
         mousex,mousey = pygame.mouse.get_pos()
         mousefov.update([mousex,mousey])
         mousefov.render(screen)
@@ -73,3 +70,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# I WONT BLOODY USE VSCODE YOU BLOODY IDIOT PRANE

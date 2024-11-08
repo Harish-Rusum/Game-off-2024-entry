@@ -6,4 +6,6 @@ class Cursor:
 
     def render(self,surf):
         mousex,mousey = pygame.mouse.get_pos()
-        surf.blit(self.img, (mousex,mousey))
+        if pygame.mouse.get_focused():
+            mousex, mousey = pygame.mouse.get_pos()
+            surf.blit(self.img, (mousex, mousey))
