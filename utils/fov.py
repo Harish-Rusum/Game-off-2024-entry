@@ -8,11 +8,9 @@ class Overlay:
         self.FovRad = rad
         self.Center = center
 
-    def update(self, new_center):
-        """Update the center of the overlay to follow the character's position."""
-        self.Center = new_center
 
-    def render(self, screen):
+    def render(self, screen,center):
+        self.Center = center
         overlay = pygame.Surface(self.ScreenSize, pygame.SRCALPHA)  
         overlay.fill((0, 0, 0, 255))
 

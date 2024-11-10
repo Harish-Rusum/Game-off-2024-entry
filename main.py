@@ -54,10 +54,12 @@ def main():
 
         screen.fill("#000000")        
         grid.render(screen)
+
         p.update(right,left,grid,screen)
-        mousex,mousey = pygame.mouse.get_pos()
-        mousefov.update([mousex,mousey])
-        mousefov.render(screen)
+
+        mouseX,mouseY = pygame.mouse.get_pos()
+        mousefov.render(screen,[mouseX,mouseY])
+
         cursor.render(screen)
         pygame.display.flip()
         clock.tick(Fps)
