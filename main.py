@@ -39,24 +39,22 @@ def main():
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
-            right = -5
+            right = -1
         elif keys[pygame.K_d]:
-            right = 5
+            right = 1
+        else:
+            right = 0
 
         if keys[pygame.K_w]:
-            left = -5
+            left = -1
         elif keys[pygame.K_s]:
-            left = 5
-
-        if keys[pygame.K_UP]:
-            mousefov.FovRad += 5
-        if keys[pygame.K_DOWN]:
-            mousefov.FovRad -= 5
+            left = 1
+        else:
+            left = 0
 
         screen.fill("#000000")        
         grid.render(screen)
-        p.move(right, left, grid)
-        p.render(screen)
+        p.update(right,left,grid,screen)
         mousex,mousey = pygame.mouse.get_pos()
         mousefov.update([mousex,mousey])
         mousefov.render(screen)
@@ -70,5 +68,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# I WONT BLOODY USE VSCODE YOU BLOODY IDIOT PRANE

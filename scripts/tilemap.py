@@ -66,17 +66,16 @@ class Grid:
                 screen.blit(tile.img, (self.grid[y][x][2]))
 
     def getSurroundingTiles(self, screen_x, screen_y):
-        center_tile_x = screen_x // self.tileSize
-        center_tile_y = screen_y // self.tileSize
+        center_tile_x = int(screen_x // self.tileSize)
+        center_tile_y = int(screen_y // self.tileSize)
 
         surrounding_tiles = []
-        for dy in range(-1, 2):
-            for dx in range(-1, 2):
-                tile_x = int(center_tile_x + dx)
-                tile_y = int(center_tile_y + dy)
+        for dy in range(-2, 3):
+            for dx in range(-2, 3):
+                tile_x = (center_tile_x + dx)
+                tile_y = (center_tile_y + dy)
                 
-                if 0 <= tile_x < self.tilesX and 0 <= tile_y < self.tilesY:
-                    surrounding_tiles.append(self.grid[tile_y][tile_x])
+                surrounding_tiles.append(self.grid[tile_y][tile_x])
         
         return surrounding_tiles
 
