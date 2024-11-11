@@ -21,7 +21,7 @@ clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
 mousefov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
-p = Player(0, 0, 35, 35)
+player = Player(0, 0, TileSize, TileSize)
 cursor = Cursor()
 
 
@@ -37,7 +37,7 @@ def main():
                 running = False
 
         keys = pygame.key.get_pressed()
-
+        jump = False
         if keys[pygame.K_a]:
             right = -1
         elif keys[pygame.K_d]:
@@ -46,16 +46,14 @@ def main():
             right = 0
 
         if keys[pygame.K_w]:
-            left = -1
-        elif keys[pygame.K_s]:
-            left = 1
+            jump = True
         else:
-            left = 0
+            jump = False
 
         screen.fill("#000000")        
         grid.render(screen)
 
-        p.update(right,left,grid,screen)
+        player.update(right,grid,screen,jump=jump)
 
         mouseX,mouseY = pygame.mouse.get_pos()
         mousefov.render(screen,[mouseX,mouseY])
