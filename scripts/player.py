@@ -30,7 +30,8 @@ class Player:
         self.terminalVel = 8
         self.jumpStrength = -8
         self.jumping = False
-        self.jumping = False
+        self.coyoteTime = 0.15
+        self.coyoteTimer = 0
 
     def render(self, surf):
         img = self.sheet[self.frame]
@@ -43,6 +44,7 @@ class Player:
     def gravity(self, grid):
         if not self.jumping:
             self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
+        
         self.rect.y += self.yVel
         self.jumping = False
 
@@ -53,17 +55,21 @@ class Player:
                 if self.yVel > 0:
                     self.rect.bottom = tileRect.top
                     self.jumping = True
+                    self.coyoteTimer = self.coyoteTime
                 elif self.yVel < 0:
                     self.rect.top = tileRect.bottom
                 self.yVel = 0
                 break
 
         self.y = self.rect.y
+        if not self.jumping:
+            self.coyoteTimer = max(0, self.coyoteTimer - 1 / 60)  # Decrease timer if in air
 
     def jump(self):
-        if self.jumping:
+        if self.jumping or self.coyoteTimer > 0:
             self.yVel = self.jumpStrength
             self.jumping = False
+            self.coyoteTimer = 0
 
     def moveX(self, dx, grid):
         if dx != 0:
@@ -102,5 +108,5 @@ class Player:
         self.render(screen)
         self.moveX(dx, grid)
         self.gravity(grid)
-        if jump and self.jumping:
+        if jump:
             self.jump()
