@@ -21,14 +21,15 @@ clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
 mousefov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
-player = Player(0, 0, TileSize, TileSize)
+player = Player(0, 0, TileSize, TileSize,1)
 cursor = Cursor()
 
 def main():
     running = True
+    charnum = 1
+    switching = True
     while running:
         screen.fill(Black)
-
         right = 0
 
         for event in pygame.event.get():
@@ -48,6 +49,14 @@ def main():
             jump = True
         else:
             jump = False
+
+        if keys[pygame.K_RIGHT]:
+            if not switching:
+                charnum = (charnum + 1) % 4
+                player.updateChar(charnum)
+                switching = True
+        else:
+            switching = False
 
         screen.fill("#000000")        
         grid.render(screen)

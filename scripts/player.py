@@ -2,13 +2,13 @@ import pygame
 from utils.spritesheet import SpriteSheet
 
 class Player:
-    def __init__(self, x, y, playerX, playerY):
+    def __init__(self, x, y, playerX, playerY,charNum):
         self.rotation = -1
         self.x = x
         self.y = y
         self.state = 0
         self.spriteSheet = SpriteSheet()
-        self.sheet = self.spriteSheet.split("assets/Characters/sheet.png", 1, 4, 24, 24)
+        self.sheet = self.spriteSheet.split(f"assets/Characters/character{charNum}.png", 1, 4, 24, 24)
         self.frame = 0
         self.animationFrames = 4
         self.direction = 0
@@ -32,6 +32,16 @@ class Player:
         self.jumping = False
         self.coyoteTime = 0.15
         self.coyoteTimer = 0
+    
+    def updateChar(self,charNum):
+        self.spriteSheet = SpriteSheet()
+        self.sheet = self.spriteSheet.split(f"assets/Characters/character{charNum}.png", 1, 4, 24, 24)
+        self.img = self.sheet[self.frame]
+        self.img = pygame.transform.smoothscale(self.img, (self.playerX, self.playerY))
+        self.rect = self.img.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+        
 
     def render(self, surf):
         img = self.sheet[self.frame]
