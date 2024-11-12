@@ -10,7 +10,7 @@ from scripts.tilemap import Grid
 from scripts.player import Player
 from scripts.cursor import Cursor
 from utils.fov import Overlay
-from levels.thingy import matrix
+from levels.thing import matrix
 
 TileSize = 35
 ViewX, ViewY = 20, 15
@@ -53,7 +53,7 @@ frag_shader = '''
 #version 330 core
 
 // The power of the barrel distortion
-uniform float power = 1.1f;
+uniform float power = 2.2f;
 
 // Texture Unit
 uniform sampler2D textureUnit;

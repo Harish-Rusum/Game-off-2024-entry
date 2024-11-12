@@ -4,7 +4,7 @@ from scripts.tilemap import Grid
 from scripts.player import Player
 from scripts.cursor import Cursor
 from utils.fov import Overlay
-from levels.thing import matrix
+from levels.asdas import matrix
 
 pygame.init()
 
@@ -24,13 +24,12 @@ mousefov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
 player = Player(0, 0, TileSize, TileSize)
 cursor = Cursor()
 
-
 def main():
     running = True
     while running:
         screen.fill(Black)
 
-        right, left = 0, 0
+        right = 0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

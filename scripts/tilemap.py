@@ -98,7 +98,7 @@ class Palette:
             for y in range(0, self.tilesY):
                 curX = x * self.tileSize + (self.width - self.palWidth)
                 curY = y * self.tileSize
-                if num == 180:
+                if num == 200:
                     continue
                 zeros = 4 - len(str(num))
                 string = "0" * zeros + str(num)

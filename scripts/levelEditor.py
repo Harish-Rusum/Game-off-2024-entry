@@ -7,7 +7,7 @@ pygame.init()
 tileSize = 35
 viewX, viewY = 20, 15
 tilesX, tilesY = 40, 40
-palWidth = 12 * tileSize
+palWidth = 14 * tileSize
 bufferWidth = 10
 screenX, screenY = tileSize * viewX + palWidth + bufferWidth, tileSize * viewY
 fps = 60
