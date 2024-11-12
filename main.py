@@ -4,7 +4,7 @@ from scripts.tilemap import Grid
 from scripts.player import Player
 from scripts.cursor import Cursor
 from utils.fov import Overlay
-from levels.asdas import matrix
+from levels.thing import matrix
 
 pygame.init()
 
@@ -56,6 +56,7 @@ def main():
 
         mouseX,mouseY = pygame.mouse.get_pos()
         mousefov.render(screen,[mouseX,mouseY])
+
 
         cursor.render(screen)
         pygame.display.flip()

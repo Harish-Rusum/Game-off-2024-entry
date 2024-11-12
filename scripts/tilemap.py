@@ -30,7 +30,7 @@ class Grid:
         self.tilesX = tilesX
         self.tilesY = tilesY
         self.tileSize = tileSize
-        self.grid = [[[(-1, -1), (-1, -1), (0, 0)] for _ in range(tilesX)] for _ in range(tilesY)]
+        self.grid = [[[(-1, -1), (-1, -1), (0, 0), (-1, -1)] for _ in range(tilesX)] for _ in range(tilesY)]
         self.screenHeight = screenHeight
         self.screenWidth = screenWidth
         self.loadGrid(matrix)
@@ -40,6 +40,8 @@ class Grid:
             for x in range(len(matrix[0])):
                 self.grid[y][x][0] = matrix[y][x][0]
                 self.grid[y][x][1] = matrix[y][x][1]
+                self.grid[y][x][2] = matrix[y][x][2]
+                self.grid[y][x][3] = matrix[y][x][3]
 
     def render(self, screen):
         startX = 0
@@ -49,8 +51,19 @@ class Grid:
 
         for y in range(startY, endY):
             for x in range(startX, endX):
+                tileIndex, rotation = self.grid[y][x][3]
+                tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
+                tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
+                self.grid[y][x][2] = (x * self.tileSize, y * self.tileSize)
+                screen.blit(tile.img, (self.grid[y][x][2]))
+
+        for y in range(startY, endY):
+            for x in range(startX, endX):
                 tileIndex, rotation = self.grid[y][x][0]
                 tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
+                if tileIndexStr == "empty":
+                    if self.grid[y][x][3] != (-1, -1):
+                        continue
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 self.grid[y][x][2] = (x * self.tileSize, y * self.tileSize)
                 screen.blit(tile.img, (self.grid[y][x][2]))
@@ -89,7 +102,50 @@ class Palette:
         self.tilesY = height // tileSize
         self.selected = -1
         self.decorTiles = {
-            32, 44, 45, 46, 27, 84, 85, 86, 87, 88, 124, 125, 126, 127, 128, 129
+            32,
+            44,
+            45,
+            46,
+            27,
+            84,
+            85,
+            86,
+            87,
+            88,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+        },
+        self.bgTiles = {
+            180,
+            181,
+            182,
+            183,
+            184,
+            185,
+            186,
+            187,
+            188,
+            189,
+            190,
+            191,
+            192,
+            193,
+            194,
+            195,
+            195,
+            196,
+            197,
+            198,
+            199,
+            200,
+            201,
+            202,
+            203,
+            204,
         }
 
     def render(self, surf):
@@ -114,7 +170,12 @@ class Palette:
         if action == "replaceTile":
             tileX = mouseX // self.tileSize
             tileY = mouseY // self.tileSize
-            if int(self.selected) in self.decorTiles:
+
+            if int(self.selected) in self.bgTiles:
+                if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
+                    grid.grid[tileY][tileX][3] = (int(self.selected), 1)
+
+            elif int(self.selected) in self.decorTiles:
                 if 0 <= tileX < grid.tilesX and 0 <= tileY < grid.tilesY:
                     grid.grid[tileY][tileX][1] = (int(self.selected), 1)
             else:

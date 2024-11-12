@@ -63,7 +63,7 @@ class Player:
 
         self.y = self.rect.y
         if not self.jumping:
-            self.coyoteTimer = max(0, self.coyoteTimer - 1 / 60)  # Decrease timer if in air
+            self.coyoteTimer = max(0, self.coyoteTimer - 1 / 60)
 
     def jump(self):
         if self.jumping or self.coyoteTimer > 0:
@@ -93,6 +93,7 @@ class Player:
         newX = self.x + self.xVel
         self.rect.x = newX
         surrounding = grid.getSurroundingTiles(self.x, self.y)
+
         for element in surrounding:
             tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
             if element[0][0] != -1 and self.rect.colliderect(tileRect):
