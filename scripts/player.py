@@ -95,7 +95,7 @@ class Player:
             self.jumping = False
             self.coyoteTimer = 0
 
-    def moveX(self, dx, grid):
+    def moveX(self, dx, grid,screen):
         if dx != 0:
             self.xVel += self.acc * dx
             self.xVel = max(-self.maxspeed, min(self.xVel, self.maxspeed))
@@ -135,10 +135,14 @@ class Player:
                     break
 
         self.x = self.rect.x
+        if self.x < 0:
+            self.x = 0
+        if self.x > (screen.get_width() - self.playerX):
+            self.x = screen.get_width() - self.playerX
 
     def update(self, dx, grid, screen, jump=False):
         self.render(screen)
-        self.moveX(dx, grid)
+        self.moveX(dx, grid,screen)
         self.gravity(grid)
 
         if jump:
