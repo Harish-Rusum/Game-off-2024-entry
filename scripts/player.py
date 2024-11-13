@@ -42,7 +42,6 @@ class Player:
         self.rect.y = self.y
 
     def updateChar(self,charNum):
-        self.respawn()
         self.spriteSheet = SpriteSheet()
         self.sheet = self.spriteSheet.split(f"assets/Characters/character{charNum}.png", 1, 4, 24, 24)
         self.img = self.sheet[self.frame]

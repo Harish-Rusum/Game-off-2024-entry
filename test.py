@@ -28,7 +28,7 @@ clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
 mousefov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
-player = Player(0, 0, TileSize, TileSize)
+player = Player(TileSize, TileSize,1,0,315)
 cursor = Cursor()
 
 quad_buffer = ctx.buffer(data=array('f', [
@@ -53,7 +53,7 @@ frag_shader = '''
 #version 330 core
 
 // The power of the barrel distortion
-uniform float power = 2.2f;
+uniform float power = 1.2f;
 
 // Texture Unit
 uniform sampler2D textureUnit;
