@@ -41,16 +41,6 @@ class Player:
         self.rect.x = self.x
         self.rect.y = self.y
 
-    def updateChar(self,charNum):
-        self.spriteSheet = SpriteSheet()
-        self.sheet = self.spriteSheet.split(f"assets/Characters/character{charNum}.png", 1, 4, 24, 24)
-        self.img = self.sheet[self.frame]
-        self.img = pygame.transform.smoothscale(self.img, (self.playerX, self.playerY))
-        self.rect = self.img.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-        
-
     def render(self, surf):
         img = self.sheet[self.frame]
         img = pygame.transform.smoothscale(img, (self.playerX, self.playerY))
