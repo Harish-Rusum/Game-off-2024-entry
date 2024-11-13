@@ -1,11 +1,14 @@
 import pygame
 from utils.spritesheet import SpriteSheet
+from scripts.tilemap import Tile
 
 class Player:
-    def __init__(self, x, y, playerX, playerY,charNum):
+    def __init__(self, playerX, playerY,charNum,spawnX,spawnY):
         self.rotation = -1
-        self.x = x
-        self.y = y
+        self.spawnX = spawnX
+        self.spawnY = spawnY
+        self.x = spawnX
+        self.y = spawnY
         self.state = 0
         self.spriteSheet = SpriteSheet()
         self.sheet = self.spriteSheet.split(f"assets/Characters/character{charNum}.png", 1, 4, 24, 24)
@@ -20,7 +23,6 @@ class Player:
         self.rect = self.img.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-
         self.acc = 0.4
         self.decc = 0.2
         self.maxspeed = 4
@@ -33,7 +35,14 @@ class Player:
         self.coyoteTime = 0.15
         self.coyoteTimer = 0
     
+    def respawn(self):
+        self.x = self.spawnX
+        self.y = self.spawnY
+        self.rect.x = self.x
+        self.rect.y = self.y
+
     def updateChar(self,charNum):
+        self.respawn()
         self.spriteSheet = SpriteSheet()
         self.sheet = self.spriteSheet.split(f"assets/Characters/character{charNum}.png", 1, 4, 24, 24)
         self.img = self.sheet[self.frame]
@@ -60,16 +69,22 @@ class Player:
 
         surrounding = grid.getSurroundingTiles(self.x, self.y)
         for element in surrounding:
-            tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
-            if element[0][0] != -1 and self.rect.colliderect(tileRect):
-                if self.yVel > 0:
-                    self.rect.bottom = tileRect.top
-                    self.jumping = True
-                    self.coyoteTimer = self.coyoteTime
-                elif self.yVel < 0:
-                    self.rect.top = tileRect.bottom
-                self.yVel = 0
-                break
+            if element[0][0] == 68:
+                selfmask = pygame.mask.from_surface(self.img)
+                spikemask = pygame.mask.from_surface(Tile("0068",grid.tileSize,grid.tileSize,1).img)
+                if selfmask.overlap(spikemask,(self.x - element[2][0],self.y - element[2][1])):
+                    self.respawn()
+            else:
+                tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
+                if element[0][0] != -1 and self.rect.colliderect(tileRect):
+                    if self.yVel > 0:
+                        self.rect.bottom = tileRect.top
+                        self.jumping = True
+                        self.coyoteTimer = self.coyoteTime
+                    elif self.yVel < 0:
+                        self.rect.top = tileRect.bottom
+                    self.yVel = 0
+                    break
 
         self.y = self.rect.y
         if not self.jumping:
@@ -105,19 +120,27 @@ class Player:
         surrounding = grid.getSurroundingTiles(self.x, self.y)
 
         for element in surrounding:
-            tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
-            if element[0][0] != -1 and self.rect.colliderect(tileRect):
-                if self.xVel > 0:
-                    self.rect.right = tileRect.left
-                elif self.xVel < 0:
-                    self.rect.left = tileRect.right
-                self.xVel = 0
-                break
+            if element[0][0] == 68:
+                selfmask = pygame.mask.from_surface(self.img)
+                spikemask = pygame.mask.from_surface(Tile("0068",grid.tileSize,grid.tileSize,1).img)
+                if selfmask.overlap(spikemask,(self.x - element[2][0],self.y - element[2][1])):
+                    self.respawn()
+            else:
+                tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
+                if element[0][0] != -1 and self.rect.colliderect(tileRect):
+                    if self.xVel > 0:
+                        self.rect.right = tileRect.left
+                    elif self.xVel < 0:
+                        self.rect.left = tileRect.right
+                    self.xVel = 0
+                    break
+
         self.x = self.rect.x
 
     def update(self, dx, grid, screen, jump=False):
         self.render(screen)
         self.moveX(dx, grid)
         self.gravity(grid)
+
         if jump:
             self.jump()

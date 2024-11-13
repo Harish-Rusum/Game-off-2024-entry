@@ -21,7 +21,7 @@ clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
 mousefov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
-player = Player(0, 0, TileSize, TileSize,1)
+player = Player(TileSize, TileSize,1,0,315)
 cursor = Cursor()
 
 def main():
@@ -63,9 +63,8 @@ def main():
 
         player.update(right,grid,screen,jump=jump)
 
-        mouseX,mouseY = pygame.mouse.get_pos()
-        mousefov.render(screen,[mouseX,mouseY])
-
+        # mouseX,mouseY = pygame.mouse.get_pos()
+        # mousefov.render(screen,[mouseX,mouseY])
 
         cursor.render(screen)
         pygame.display.flip()
