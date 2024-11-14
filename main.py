@@ -51,6 +51,10 @@ def main():
             jump = True
         else:
             jump = False
+
+        if keys[pygame.K_q]:
+            running = False
+
         
         if keys[pygame.K_ESCAPE]:
             if not holdingEsc:
