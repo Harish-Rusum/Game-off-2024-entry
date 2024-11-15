@@ -48,7 +48,7 @@ class Menu:
             self.holdingEsc = False
             
         for i, button in enumerate(self.buttons):
-            button_scaled = pygame.transform.smoothscale(button,(button.get_width() * 1.2,button.get_height() * 1.2))
+            button_scaled = pygame.transform.smoothscale(button,(button.get_width() * 1.5,button.get_height() * 1.5))
             button_x, button_y = 20, (i * 40 + 20)
             if button_x <= mouseX <= button_x + button_scaled.get_width() and \
                button_y <= mouseY <= button_y + button_scaled.get_height():
