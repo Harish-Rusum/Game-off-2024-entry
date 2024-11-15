@@ -52,10 +52,6 @@ def main():
         else:
             jump = False
 
-        if keys[pygame.K_q]:
-            running = False
-
-
         if keys[pygame.K_ESCAPE]:
             if not holdingEsc:
                 holdingEsc = True
@@ -67,6 +63,8 @@ def main():
         grid.render(screen)
         player.render(screen)
         menu.render()
+        if menu.exit:
+            running = False
         if not menu.menuOpen:
             player.update(right,grid,screen,jump=jump)
 

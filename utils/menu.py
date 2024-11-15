@@ -9,7 +9,9 @@ class Menu:
         self.holdingEsc = False
         self.buttons = [
             pygame.image.load("assets/Buttons/back.png").convert_alpha(),
+            pygame.image.load("assets/Buttons/exit.png").convert_alpha(),
         ]
+        self.exit = False
         self.directions = [
             (-2, -2), (-2, -1), (-2, 0), (-2, 1), (-2, 2),
             (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2),
@@ -31,6 +33,8 @@ class Menu:
     def click(self, i):
         if i == 0:
             self.menuOpen = False
+        if i == 1:
+            self.exit = True
         return
     
     def render(self):
@@ -45,7 +49,7 @@ class Menu:
             
         for i, button in enumerate(self.buttons):
             button_scaled = pygame.transform.smoothscale(button,(button.get_width() * 1.2,button.get_height() * 1.2))
-            button_x, button_y = 20, (i * 64 + 20)
+            button_x, button_y = 20, (i * 40 + 20)
             if button_x <= mouseX <= button_x + button_scaled.get_width() and \
                button_y <= mouseY <= button_y + button_scaled.get_height():
                 self.outline(button_scaled, (button_x, button_y))
