@@ -55,7 +55,7 @@ def main():
         if keys[pygame.K_q]:
             running = False
 
-        
+
         if keys[pygame.K_ESCAPE]:
             if not holdingEsc:
                 holdingEsc = True

@@ -11,9 +11,11 @@ class Menu:
             pygame.image.load("assets/Buttons/back.png").convert_alpha(),
         ]
         self.directions = [
-            (-1, -1), (-1, 0), (-1, 1),
-            (0, -1), (0, 1),
-            (1, -1), (1, 0), (1, 1),
+            (-2, -2), (-2, -1), (-2, 0), (-2, 1), (-2, 2),
+            (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2),
+            (0, -2), (0, -1), (0, 1), (0, 2),
+            (1, -2), (1, -1), (1, 0), (1, 1), (1, 2),
+            (2, -2), (2, -1), (2, 0), (2, 1), (2, 2),
         ]
     
     def outline(self, img, pos, color=(255, 255, 255)):
@@ -25,8 +27,14 @@ class Menu:
                 x, y = point
                 outlinePos = (pos[0] + x + offset[0], pos[1] + y + offset[1])
                 self.overlay.set_at(outlinePos, color)
+
+    def click(self, i):
+        if i == 0:
+            self.menuOpen = False
+        return
     
     def render(self):
+        mouseX, mouseY = pygame.mouse.get_pos()
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             if not self.holdingEsc:
@@ -36,10 +44,16 @@ class Menu:
             self.holdingEsc = False
             
         for i, button in enumerate(self.buttons):
-            button_scaled = pygame.transform.scale2x(button)
+            button_scaled = pygame.transform.smoothscale(button,(button.get_width() * 1.2,button.get_height() * 1.2))
             button_x, button_y = 20, (i * 64 + 20)
-            
-            self.outline(button_scaled, (button_x, button_y))
+            if button_x <= mouseX <= button_x + button_scaled.get_width() and \
+               button_y <= mouseY <= button_y + button_scaled.get_height():
+                self.outline(button_scaled, (button_x, button_y))
+                if pygame.mouse.get_pressed()[0]:
+                    self.click(i)
+            else:
+                self.outline(button_scaled, (button_x, button_y), color=(0, 0, 0))
+
             self.overlay.blit(button_scaled, (button_x, button_y))
 
         if self.menuOpen:
