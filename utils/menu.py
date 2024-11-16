@@ -1,5 +1,4 @@
 import pygame
-
 class Menu:
     def __init__(self, surf):
         self.menuOpen = False
@@ -18,6 +17,8 @@ class Menu:
         self.exit = False
         self.mute = False
         self.muteHeld = False
+        self.volUpHeld = False
+        self.volDownHeld = False
         self.soundChange = 0
         self.directions = [
             (-2, -2), (-2, -1), (-2, 0), (-2, 1), (-2, 2),
@@ -47,9 +48,13 @@ class Menu:
                 self.mute = not self.mute
                 self.muteHeld = True
         elif i == 3:
-            self.soundChange  += 0.1
-        elif i  == 4:
-            self.soundChange  -= 0.1
+            if not self.volUpHeld:
+                self.soundChange += 0.1
+                self.volUpHeld = True
+        elif i == 4:
+            if not self.volDownHeld:
+                self.soundChange -= 0.1
+                self.volDownHeld = True
         return
 
     def render(self):
@@ -65,7 +70,7 @@ class Menu:
 
         self.overlay.fill((0, 0, 0, 200))
 
-        for i, button in enumerate(self.buttons[:3]+self.buttons[4:] if not self.mute else self.buttons[:2]+self.buttons[3:]):
+        for i, button in enumerate(self.buttons[:3] + self.buttons[4:] if not self.mute else self.buttons[:2] + self.buttons[3:]):
             button_scaled = pygame.transform.smoothscale(button, (button.get_width() * 1.5, button.get_height() * 1.5))
             button_x, button_y = 20, (i * 60 + 20)
             if button_x <= mouseX <= button_x + button_scaled.get_width() and \
@@ -80,6 +85,8 @@ class Menu:
 
         if not pygame.mouse.get_pressed()[0]:
             self.muteHeld = False
+            self.volUpHeld = False
+            self.volDownHeld = False
 
         if self.menuOpen:
             self.surf.blit(self.overlay, (0, 0))
