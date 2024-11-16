@@ -66,6 +66,7 @@ class Player:
                 spikemask = pygame.mask.from_surface(Tile("0068", grid.tileSize, grid.tileSize, 1).img)
                 if selfmask.overlap(spikemask, (self.x - element[2][0], self.y - element[2][1])):
                     self.respawn()
+                    return
             else:
                 tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
                 if element[0][0] != -1 and self.rect.colliderect(tileRect):

@@ -10,8 +10,11 @@ class Menu:
         self.buttons = [
             pygame.image.load("assets/Buttons/back.png").convert_alpha(),
             pygame.image.load("assets/Buttons/exit.png").convert_alpha(),
+            pygame.image.load("assets/Buttons/mute.png").convert_alpha(),
         ]
         self.exit = False
+        self.mute = False
+        self.muteHeld = False
         self.directions = [
             (-2, -2), (-2, -1), (-2, 0), (-2, 1), (-2, 2),
             (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2),
@@ -35,6 +38,12 @@ class Menu:
             self.menuOpen = False
         if i == 1:
             self.exit = True
+        if i == 2:
+            if self.muteHeld == False:
+                self.mute = not self.mute
+            return
+        else:
+            self.muteHeld = False
         return
     
     def render(self):
@@ -56,7 +65,7 @@ class Menu:
                 if pygame.mouse.get_pressed()[0]:
                     self.click(i)
             else:
-                self.outline(button_scaled, (button_x, button_y), color=(0, 0, 0))
+                self.outline(button_scaled, (button_x, button_y), color=(100,100,100))
 
             self.overlay.blit(button_scaled, (button_x, button_y))
 

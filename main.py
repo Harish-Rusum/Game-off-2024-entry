@@ -8,8 +8,9 @@ from utils.menu import Menu
 from levels.thing import matrix
 
 pygame.init()
+pygame.mixer.init()
 
-TileSize = 35
+TileSize = 40
 ViewX, ViewY = 20, 15
 TilesX, TilesY = 40, 40
 ScreenX, ScreenY = TileSize * ViewX, TileSize * ViewY
@@ -21,9 +22,13 @@ pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
-mousefov = Overlay(ScreenX, ScreenY, 250, [ScreenX // 2, ScreenY // 2])
+fov = Overlay(ScreenX, ScreenY, 200, [ScreenX // 2, ScreenY // 2])
 player = Player(TileSize, TileSize,1,0,315)
 cursor = Cursor()
+
+pygame.mixer.music.load("assets/Music/bgm.mp3")
+pygame.mixer.music.play(loops=-1)
+pygame.mixer.music.set_volume(0.2)
 
 def main():
     running = True
@@ -62,14 +67,23 @@ def main():
         screen.fill("#000000")
         grid.render(screen)
         player.render(screen)
-        menu.render()
+
+
         if menu.exit:
             running = False
         if not menu.menuOpen:
             player.update(right,grid,screen,jump=jump)
-
-        # mouseX,mouseY = pygame.mouse.get_pos()
-        # mousefov.render(screen,[mouseX,mouseY])
+            if not menu.mute:
+                pygame.mixer.music.set_volume(0.2)
+            else:
+                pygame.mixer.music.set_volume(0.0)
+        else:
+            if not menu.mute:
+                pygame.mixer.music.set_volume(0.5)
+            else:
+                pygame.mixer.music.set_volume(0.0)
+        fov.render(screen,[player.x+player.img.get_width() // 2,player.y + player.img.get_height() // 2])
+        menu.render()
 
         cursor.render(screen)
         pygame.display.flip()
