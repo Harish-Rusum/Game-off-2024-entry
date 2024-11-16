@@ -31,9 +31,12 @@ class Player:
         self.gravityAcc = 0.45
         self.terminalVel = 8
         self.jumpStrength = -8
-        self.jumping = False
+        self.onGround = False
         self.coyoteTime = 0.15
         self.coyoteTimer = 0
+        self.maxJumps = 2 
+        self.jumpsRemaining = self.maxJumps
+        self.jumpHeld = False
     
     def respawn(self):
         self.x = self.spawnX
@@ -50,40 +53,43 @@ class Player:
         surf.blit(img, (self.x, self.y))
 
     def gravity(self, grid):
-        if not self.jumping:
+        if not self.onGround:
             self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
         
         self.rect.y += self.yVel
-        self.jumping = False
+        self.onGround = False
 
         surrounding = grid.getSurroundingTiles(self.x, self.y)
         for element in surrounding:
             if element[0][0] == 68:
                 selfmask = pygame.mask.from_surface(self.img)
-                spikemask = pygame.mask.from_surface(Tile("0068",grid.tileSize,grid.tileSize,1).img)
-                if selfmask.overlap(spikemask,(self.x - element[2][0],self.y - element[2][1])):
+                spikemask = pygame.mask.from_surface(Tile("0068", grid.tileSize, grid.tileSize, 1).img)
+                if selfmask.overlap(spikemask, (self.x - element[2][0], self.y - element[2][1])):
                     self.respawn()
             else:
                 tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
                 if element[0][0] != -1 and self.rect.colliderect(tileRect):
                     if self.yVel > 0:
                         self.rect.bottom = tileRect.top
-                        self.jumping = True
+                        self.onGround = True
                         self.coyoteTimer = self.coyoteTime
+                        self.jumpsRemaining = self.maxJumps
                     elif self.yVel < 0:
                         self.rect.top = tileRect.bottom
                     self.yVel = 0
                     break
 
         self.y = self.rect.y
-        if not self.jumping:
+        if not self.onGround:
             self.coyoteTimer = max(0, self.coyoteTimer - 1 / 60)
 
     def jump(self):
-        if self.jumping or self.coyoteTimer > 0:
+        if self.onGround or self.coyoteTimer > 0 or self.jumpsRemaining > 0:
             self.yVel = self.jumpStrength
-            self.jumping = False
+            self.onGround = False
             self.coyoteTimer = 0
+            self.jumpsRemaining -= 1
+
 
     def moveX(self, dx, grid,screen):
         if dx != 0:
@@ -132,8 +138,12 @@ class Player:
 
     def update(self, dx, grid, screen, jump=False):
         self.render(screen)
-        self.moveX(dx, grid,screen)
+        self.moveX(dx, grid, screen)
         self.gravity(grid)
 
         if jump:
-            self.jump()
+            if not self.jumpHeld:
+                self.jumpHeld = True
+                self.jump()
+        else:
+            self.jumpHeld = False
