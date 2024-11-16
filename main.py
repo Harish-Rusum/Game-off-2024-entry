@@ -74,12 +74,12 @@ def main():
         if not menu.menuOpen:
             player.update(right,grid,screen,jump=jump)
             if not menu.mute:
-                pygame.mixer.music.set_volume(0.2)
+                pygame.mixer.music.set_volume(0.2+menu.soundChange)
             else:
-                pygame.mixer.music.set_volume(0.0)
+                pygame.mixer.music.set_volume(0.0+menu.soundChange)
         else:
             if not menu.mute:
-                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.set_volume(0.5+menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0)
         fov.render(screen,[player.x+player.img.get_width() // 2,player.y + player.img.get_height() // 2])

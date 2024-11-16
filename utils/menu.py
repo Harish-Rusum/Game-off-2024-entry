@@ -12,10 +12,13 @@ class Menu:
             pygame.image.load("assets/Buttons/exit.png").convert_alpha(),
             pygame.image.load("assets/Buttons/mute.png").convert_alpha(),
             pygame.image.load("assets/Buttons/unmute.png").convert_alpha(),
+            pygame.image.load("assets/Buttons/volUp.png").convert_alpha(),
+            pygame.image.load("assets/Buttons/volDown.png").convert_alpha(),
         ]
         self.exit = False
         self.mute = False
         self.muteHeld = False
+        self.soundChange = 0
         self.directions = [
             (-2, -2), (-2, -1), (-2, 0), (-2, 1), (-2, 2),
             (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2),
@@ -43,6 +46,10 @@ class Menu:
             if not self.muteHeld:
                 self.mute = not self.mute
                 self.muteHeld = True
+        elif i == 3:
+            self.soundChange  += 0.1
+        elif i  == 4:
+            self.soundChange  -= 0.1
         return
 
     def render(self):
@@ -58,7 +65,7 @@ class Menu:
 
         self.overlay.fill((0, 0, 0, 200))
 
-        for i, button in enumerate(self.buttons[:3] if not self.mute else [self.buttons[0], self.buttons[1], self.buttons[3]]):
+        for i, button in enumerate(self.buttons[:3]+self.buttons[4:] if not self.mute else self.buttons[:2]+self.buttons[3:]):
             button_scaled = pygame.transform.smoothscale(button, (button.get_width() * 1.5, button.get_height() * 1.5))
             button_x, button_y = 20, (i * 60 + 20)
             if button_x <= mouseX <= button_x + button_scaled.get_width() and \
