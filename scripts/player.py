@@ -37,6 +37,7 @@ class Player:
         self.maxJumps = 2 
         self.jumpsRemaining = self.maxJumps
         self.jumpHeld = False
+        self.jumping = False
     
     def respawn(self):
         self.x = self.spawnX
@@ -52,14 +53,16 @@ class Player:
             img = pygame.transform.flip(img, False, True)
         surf.blit(img, (self.x, self.y))
 
-    def gravity(self, grid,enemies):
+    def gravity(self, grid, enemies):
         if not self.onGround:
             self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
+            self.jumping = True
         
         self.rect.y += self.yVel
-        before = self.onGround
         self.onGround = False
         surrounding = grid.getSurroundingTiles(self.x, self.y)
+
+
         for element in surrounding:
             if element[0][0] == 68:
                 selfmask = pygame.mask.from_surface(self.img)
@@ -75,21 +78,26 @@ class Player:
                         self.onGround = True
                         self.coyoteTimer = self.coyoteTime
                         self.jumpsRemaining = self.maxJumps
+                        self.jumping = False
                     elif self.yVel < 0:
                         self.rect.top = tileRect.bottom
                     self.yVel = 0
                     break
-            for enemy in enemies:
-                enemyMask = pygame.mask.from_surface(enemy.img)
-                selfmask = pygame.mask.from_surface(self.img)
-                if selfmask.overlap(enemyMask,(self.x-enemy.x,self.y-enemy.y)):
-                    if before == False:
-                        print("trigger")
-                    else:
-                        print("no trigger")
-                else:
-                    print("no trigger")
 
+
+        for enemy in enemies:
+            enemyMask = pygame.mask.from_surface(enemy.img)
+            selfMask = pygame.mask.from_surface(self.img)
+            offset = (self.x - enemy.x, self.y - enemy.y)
+            overlap = selfMask.overlap(enemyMask, offset)
+
+            if overlap:
+                if self.rect.bottom > enemy.rect.top and self.jumping:
+                    enemies.remove(enemy)
+                    self.yVel = self.jumpStrength
+                else:
+                    self.respawn()
+                    return
 
         self.y = self.rect.y
         if not self.onGround:
@@ -101,6 +109,7 @@ class Player:
             self.onGround = False
             self.coyoteTimer = 0
             self.jumpsRemaining -= 1
+            self.jumping = True
 
 
     def moveX(self, dx, grid,screen):
