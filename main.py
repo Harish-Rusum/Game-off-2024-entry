@@ -3,6 +3,7 @@ import sys
 from scripts.tilemap import Grid
 from scripts.player import Player
 from scripts.cursor import Cursor
+from scripts.enemy import Enemy
 from utils.fov import Overlay
 from utils.menu import Menu
 from levels.thing import matrix
@@ -23,7 +24,10 @@ clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
 fov = Overlay(ScreenX, ScreenY, 200, [ScreenX // 2, ScreenY // 2])
-player = Player(TileSize, TileSize,1,0,315)
+player = Player(TileSize, TileSize,1,0,360)
+enemies = [
+    Enemy((320,400),(320,520),"0018","right")
+]
 cursor = Cursor()
 
 pygame.mixer.music.load("assets/Music/bgm.mp3")
@@ -72,7 +76,7 @@ def main():
         if menu.exit:
             running = False
         if not menu.menuOpen:
-            player.update(right,grid,screen,jump=jump)
+            player.update(right,grid,screen,enemies,jump=jump)
             if not menu.mute:
                 pygame.mixer.music.set_volume(0.2+menu.soundChange)
             else:
@@ -82,13 +86,15 @@ def main():
                 pygame.mixer.music.set_volume(0.5+menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0)
+
+        for enemy in enemies:
+            enemy.update(screen)
         fov.render(screen,[player.x+player.img.get_width() // 2,player.y + player.img.get_height() // 2])
         menu.render()
 
         cursor.render(screen)
         pygame.display.flip()
         clock.tick(Fps)
-
     pygame.quit()
     sys.exit()
 

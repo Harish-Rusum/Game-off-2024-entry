@@ -2,7 +2,7 @@
 import pygame
 class Menu:
     def __init__(self, surf):
-        self.menuOpen = False
+        self.menuOpen = True
         self.surf = surf
         self.overlay = pygame.Surface(surf.get_size(), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 200))
@@ -34,9 +34,9 @@ class Menu:
 
     def outline(self, img, pos, color=(255, 255, 255)):
         mask = pygame.mask.from_surface(img)
-        outline_points = mask.outline()
+        outlinePoints = mask.outline()
         for dx, dy in self.directions:
-            for x, y in outline_points:
+            for x, y in outlinePoints:
                 self.overlay.set_at((pos[0] + x + dx, pos[1] + y + dy), color)
 
     def click(self, i):
@@ -70,17 +70,17 @@ class Menu:
 
             active_buttons = self.buttonStates[self.mute]
             for i, button in enumerate(active_buttons):
-                button_x, button_y = 20, (i * 50 + 20)
-                button_rect = pygame.Rect(button_x, button_y, button.get_width(), button.get_height())
+                buttonX, buttonY = 20, (i * 50 + 20)
+                buttonRect = pygame.Rect(buttonX, buttonY, button.get_width(), button.get_height())
 
-                if button_rect.collidepoint(mouseX, mouseY):
-                    self.outline(button, (button_x, button_y))
+                if buttonRect.collidepoint(mouseX, mouseY):
+                    self.outline(button, (buttonX, buttonY))
                     if pygame.mouse.get_pressed()[0]:
                         self.click(i)
                 else:
-                    self.outline(button, (button_x, button_y), color=(100, 100, 100))
+                    self.outline(button, (buttonX, buttonY), color=(100, 100, 100))
 
-                self.overlay.blit(button, (button_x, button_y))
+                self.overlay.blit(button, (buttonX, buttonY))
 
 
             if not pygame.mouse.get_pressed()[0]:

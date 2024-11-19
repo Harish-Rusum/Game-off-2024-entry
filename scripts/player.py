@@ -52,12 +52,11 @@ class Player:
             img = pygame.transform.flip(img, False, True)
         surf.blit(img, (self.x, self.y))
 
-    def gravity(self, grid):
+    def gravity(self, grid,enemies):
         if not self.onGround:
             self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
         
         self.rect.y += self.yVel
-        self.onGround = False
 
         surrounding = grid.getSurroundingTiles(self.x, self.y)
         for element in surrounding:
@@ -79,6 +78,17 @@ class Player:
                         self.rect.top = tileRect.bottom
                     self.yVel = 0
                     break
+            for enemy in enemies:
+                enemyMask = pygame.mask.from_surface(enemy.img)
+                selfmask = pygame.mask.from_surface(self.img)
+                if selfmask.overlap(enemyMask,(self.x-enemy.x,self.y-enemy.y)):
+                    if self.onGround == False:
+                        print("trigger")
+                    else:
+                        print("no trigger")
+                else:
+                    print("no trigger")
+
 
         self.y = self.rect.y
         if not self.onGround:
@@ -137,10 +147,10 @@ class Player:
         if self.x > (screen.get_width() - self.playerX):
             self.x = screen.get_width() - self.playerX
 
-    def update(self, dx, grid, screen, jump=False):
+    def update(self, dx, grid, screen, enemies, jump=False):
         self.render(screen)
         self.moveX(dx, grid, screen)
-        self.gravity(grid)
+        self.gravity(grid,enemies)
 
         if jump:
             if not self.jumpHeld:
