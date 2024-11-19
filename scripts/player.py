@@ -57,7 +57,8 @@ class Player:
             self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
         
         self.rect.y += self.yVel
-
+        before = self.onGround
+        self.onGround = False
         surrounding = grid.getSurroundingTiles(self.x, self.y)
         for element in surrounding:
             if element[0][0] == 68:
@@ -82,7 +83,7 @@ class Player:
                 enemyMask = pygame.mask.from_surface(enemy.img)
                 selfmask = pygame.mask.from_surface(self.img)
                 if selfmask.overlap(enemyMask,(self.x-enemy.x,self.y-enemy.y)):
-                    if self.onGround == False:
+                    if before == False:
                         print("trigger")
                     else:
                         print("no trigger")
