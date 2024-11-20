@@ -2,7 +2,7 @@
 import pygame
 class Menu:
     def __init__(self, surf):
-        self.menuOpen = True
+        self.menuOpen = False
         self.surf = surf
         self.overlay = pygame.Surface(surf.get_size(), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 200))
@@ -17,7 +17,6 @@ class Menu:
                 (118 * 1.5, 16*1.5)
             ) for name in rawButtons
         ]
-
         self.exit = False
         self.mute = False
         self.buttonStates = [
@@ -63,14 +62,14 @@ class Menu:
 
         if keys[pygame.K_UP]:
             if self.upHeld == False:
-                self.selected = (self.selected - 1) % 5
+                self.selected = (self.selected - 1) % (len(self.buttons)-1)
                 self.upHeld = True
         else:
             self.upHeld = False
 
         if keys[pygame.K_DOWN]:
             if self.downHeld == False:
-                self.selected = (self.selected + 1) % 5
+                self.selected = (self.selected + 1) % (len(self.buttons)-1)
                 self.downHeld = True
         else:
             self.downHeld = False
