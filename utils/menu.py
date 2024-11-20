@@ -24,13 +24,16 @@ class Menu:
             (self.buttons[:3] + self.buttons[4:]),
             (self.buttons[:2] + self.buttons[3:])
         ]
-
+        self.selected = 0
         self.muteHeld = False
         self.volUpHeld = False
         self.volDownHeld = False
+        self.upHeld = False
+        self.downHeld = False
+        self.enterHeld = False
         self.soundChange = 0
 
-        self.directions = [(dx, dy) for dx in range(-2, 3) for dy in range(-2, 3) if (dx, dy) != (0, 0)]
+        self.directions = [(dx, dy) for dx in range(-1, 2) for dy in range(-1, 2) if (dx, dy) != (0, 0)]
 
     def outline(self, img, pos, color=(255, 255, 255)):
         mask = pygame.mask.from_surface(img)
@@ -58,6 +61,27 @@ class Menu:
         mouseX, mouseY = pygame.mouse.get_pos()
         keys = pygame.key.get_pressed()
 
+        if keys[pygame.K_UP]:
+            if self.upHeld == False:
+                self.selected = (self.selected - 1) % 5
+                self.upHeld = True
+        else:
+            self.upHeld = False
+
+        if keys[pygame.K_DOWN]:
+            if self.downHeld == False:
+                self.selected = (self.selected + 1) % 5
+                self.downHeld = True
+        else:
+            self.downHeld = False
+
+        if keys[pygame.K_RETURN]:
+            if self.enterHeld == False:
+                self.click(self.selected)
+                self.enterHeld = True
+        else:
+            self.enterHeld = False
+
         if keys[pygame.K_ESCAPE]:
             if not self.holdingEsc:
                 self.menuOpen = not self.menuOpen
@@ -68,20 +92,21 @@ class Menu:
         if self.menuOpen:
             self.overlay.fill((0, 0, 0, 200))
 
-            active_buttons = self.buttonStates[self.mute]
-            for i, button in enumerate(active_buttons):
+            activeButtons = self.buttonStates[self.mute]
+            for i, button in enumerate(activeButtons):
                 buttonX, buttonY = 20, (i * 50 + 20)
                 buttonRect = pygame.Rect(buttonX, buttonY, button.get_width(), button.get_height())
 
                 if buttonRect.collidepoint(mouseX, mouseY):
-                    self.outline(button, (buttonX, buttonY))
+                    self.selected = i
                     if pygame.mouse.get_pressed()[0]:
                         self.click(i)
                 else:
                     self.outline(button, (buttonX, buttonY), color=(100, 100, 100))
 
                 self.overlay.blit(button, (buttonX, buttonY))
-
+            if self.selected != None:
+                self.outline(self.buttonStates[self.mute][self.selected],(20,self.selected*50+20))
 
             if not pygame.mouse.get_pressed()[0]:
                 self.muteHeld = self.volUpHeld = self.volDownHeld = False

@@ -37,7 +37,7 @@ class Player:
         self.maxJumps = 2 
         self.jumpsRemaining = self.maxJumps
         self.jumpHeld = False
-        self.jumping = False
+        self.notGroundCollision = False
     
     def respawn(self):
         self.x = self.spawnX
@@ -56,7 +56,7 @@ class Player:
     def gravity(self, grid, enemies):
         if not self.onGround:
             self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
-            self.jumping = True
+            self.notGroundCollision = True
         
         self.rect.y += self.yVel
         self.onGround = False
@@ -78,7 +78,7 @@ class Player:
                         self.onGround = True
                         self.coyoteTimer = self.coyoteTime
                         self.jumpsRemaining = self.maxJumps
-                        self.jumping = False
+                        self.notGroundCollision = False
                     elif self.yVel < 0:
                         self.rect.top = tileRect.bottom
                     self.yVel = 0
@@ -92,7 +92,7 @@ class Player:
             overlap = selfMask.overlap(enemyMask, offset)
 
             if overlap:
-                if self.rect.bottom > enemy.rect.top and self.jumping:
+                if self.rect.bottom > enemy.rect.top and self.notGroundCollision:
                     enemies.remove(enemy)
                     self.yVel = self.jumpStrength
                 else:
@@ -109,7 +109,7 @@ class Player:
             self.onGround = False
             self.coyoteTimer = 0
             self.jumpsRemaining -= 1
-            self.jumping = True
+            self.notGroundCollision = True
 
 
     def moveX(self, dx, grid,screen):

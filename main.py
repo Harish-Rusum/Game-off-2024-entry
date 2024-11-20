@@ -26,7 +26,7 @@ grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
 fov = Overlay(ScreenX, ScreenY, 200, [ScreenX // 2, ScreenY // 2])
 player = Player(TileSize, TileSize,1,0,360)
 enemies = [
-    Enemy((320,400),(320,520),"0018","right")
+    Enemy((400,400),(400,520),"0018","right")
 ]
 cursor = Cursor()
 
