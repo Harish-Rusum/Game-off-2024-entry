@@ -18,7 +18,7 @@ class Tile:
             surface = pygame.Surface((scaleX, scaleY))
             surface.fill((0, 0, 0))
         else:
-            loaded = pygame.image.load(f"assets/tile_{tileIndex}.png").convert_alpha()
+            loaded = pygame.image.load(f"assets/Tile_{tileIndex}.png").convert_alpha()
             scaled = pygame.transform.smoothscale(loaded, (scaleX, scaleY))
             surface = pygame.transform.rotate(scaled, (rotation - 1) * -90)
 
@@ -154,11 +154,11 @@ class Palette:
             for y in range(0, self.tilesY):
                 curX = x * self.tileSize + (self.width - self.palWidth)
                 curY = y * self.tileSize
-                if num == 200:
+                if num == 96:
                     continue
                 zeros = 4 - len(str(num))
                 string = "0" * zeros + str(num)
-                loaded = pygame.image.load(f"assets/tile_{string}.png").convert_alpha()
+                loaded = pygame.image.load(f"assets/Tile_{string}.png").convert_alpha()
                 scaled = pygame.transform.smoothscale(loaded, (self.tileSize, self.tileSize))
                 surf.blit(scaled, (curX, curY))
                 if num == int(self.selected):

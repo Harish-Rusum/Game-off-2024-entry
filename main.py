@@ -6,7 +6,7 @@ from scripts.cursor import Cursor
 from scripts.enemy import Enemy
 from utils.fov import Overlay
 from utils.menu import Menu
-from levels.thing import matrix
+# from levels.thing import matrix
 
 pygame.init()
 pygame.mixer.init()
@@ -17,6 +17,9 @@ TilesX, TilesY = 40, 40
 ScreenX, ScreenY = TileSize * ViewX, TileSize * ViewY
 Fps = 60
 Black = "#000000"
+
+# matrix = [[[(-1, -1), (-1, -1), (0,0), (-1, -1)] for _ in range(TilesX)] for _ in range(TilesY)]
+from levels.thing import matrix
 
 screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")

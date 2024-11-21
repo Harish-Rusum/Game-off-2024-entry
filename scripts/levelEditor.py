@@ -7,7 +7,7 @@ pygame.init()
 tileSize = 35
 viewX, viewY = 20, 15
 tilesX, tilesY = 40, 40
-palWidth = 14 * tileSize
+palWidth = 7 * tileSize
 bufferWidth = 10
 screenX, screenY = tileSize * viewX + palWidth + bufferWidth, tileSize * viewY
 fps = 60
@@ -19,8 +19,7 @@ screen = pygame.display.set_mode((screenX, screenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 
-# matrix = [[[(-1, -1), (-1, -1), (0,0), (-1, -1)] for _ in range(tilesX)] for _ in range(tilesY)]
-from thing import matrix
+matrix = [[[(-1, -1), (-1, -1), (0,0), (-1, -1)] for _ in range(tilesX)] for _ in range(tilesY)]
 
 from tilemap import Grid, Palette
 

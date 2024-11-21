@@ -4,7 +4,7 @@ class Enemy:
     def __init__(self, pos, moveRange, num, dir):
         self.x = pos[0]
         self.y = pos[1]
-        self.img = pygame.image.load(f"assets/Characters/tile_{num}.png").convert_alpha()
+        self.img = pygame.image.load(f"assets/Characters/Tile_{num}.png").convert_alpha()
         self.img = pygame.transform.smoothscale(self.img, (40, 40))
         self.rect = self.img.get_rect()
         self.rect.x = self.x
