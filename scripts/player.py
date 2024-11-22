@@ -32,12 +32,9 @@ class Player:
         self.terminalVel = 8
         self.jumpStrength = -10
         self.onGround = False
-        self.coyoteTime = 0.15
-        self.coyoteTimer = 0
-        self.maxJumps = 2 
+        self.maxJumps = 1 
         self.jumpsRemaining = self.maxJumps
         self.jumpHeld = False
-        self.falling = False
         self.falling = False
     
     def respawn(self):
@@ -79,8 +76,8 @@ class Player:
                     if self.yVel > 0:
                         self.rect.bottom = tileRect.top
                         self.onGround = True
-                        self.coyoteTimer = self.coyoteTime
-                        self.jumpsRemaining = self.maxJumps
+                        if self.falling == False:
+                            self.jumpsRemaining = self.maxJumps
                         self.falling = False
                     elif self.yVel < 0:
                         self.rect.top = tileRect.bottom
@@ -98,19 +95,17 @@ class Player:
                 if self.rect.bottom > enemy.rect.top and self.falling:
                     enemies.remove(enemy)
                     self.yVel = self.jumpStrength
+                    self.jumpsRemaining = 1
                 else:
                     self.respawn()
                     return
 
         self.y = self.rect.y
-        if not self.onGround:
-            self.coyoteTimer = max(0, self.coyoteTimer - 1 / 60)
 
     def jump(self):
-        if self.onGround or self.coyoteTimer > 0 or self.jumpsRemaining > 0:
+        if self.onGround or self.jumpsRemaining > 0:
             self.yVel = self.jumpStrength
             self.onGround = False
-            self.coyoteTimer = 0
             self.jumpsRemaining -= 1
             self.falling = True
 
