@@ -1,3 +1,4 @@
+
 import pygame
 from utils.spritesheet import SpriteSheet
 
@@ -32,6 +33,9 @@ class Player:
         self.maxJumps = 1
         self.jumpsRemaining = self.maxJumps
         self.jumpHeld = False
+        self.extraJumpStrength = 2
+        self.coyoteTime = 0.15
+        self.coyoteTimer = 0
 
     def respawn(self):
         self.x = self.spawnX
@@ -48,7 +52,6 @@ class Player:
             img = pygame.transform.rotate(img, -180)
             img = pygame.transform.flip(img, False, True)
         surf.blit(img, (self.x, self.y))
-
 
     def gravity(self, grid, enemies):
         self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
@@ -72,6 +75,11 @@ class Player:
 
         self.state = "grounded" if isGrounded else "airborne"
 
+        if isGrounded:
+            self.coyoteTimer = 0
+        else:
+            self.coyoteTimer += 1 / 60
+
         for enemy in enemies:
             enemyMask = pygame.mask.from_surface(enemy.img)
             playerMask = pygame.mask.from_surface(self.img)
@@ -80,8 +88,7 @@ class Player:
             if overlap:
                 if self.state == "airborne" and self.yVel > 0:
                     enemies.remove(enemy)
-                    self.yVel = self.jumpStrength
-                    self.jumpsRemaining = 1
+                    self.yVel = (self.jumpStrength - self.extraJumpStrength)
                 else:
                     self.respawn()
                     return
@@ -91,11 +98,12 @@ class Player:
             self.jumpsRemaining = 0
 
     def jump(self):
-        if self.state == "grounded" or self.jumpsRemaining > 0:
+        if self.state == "grounded" or self.jumpsRemaining > 0 or self.coyoteTimer < self.coyoteTime:
             self.yVel = self.jumpStrength
             self.state = "airborne"
             if self.jumpsRemaining > 0:
                 self.jumpsRemaining -= 1
+            self.coyoteTimer = 0
 
     def moveX(self, dx, grid, screen):
         if dx != 0:
