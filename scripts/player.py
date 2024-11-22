@@ -1,15 +1,13 @@
 import pygame
 from utils.spritesheet import SpriteSheet
-from scripts.tilemap import Tile
 
 class Player:
-    def __init__(self, playerX, playerY,charNum,spawnX,spawnY):
-        self.rotation = -1
+    def __init__(self, playerX, playerY, charNum, spawnX, spawnY):
         self.spawnX = spawnX
         self.spawnY = spawnY
         self.x = spawnX
         self.y = spawnY
-        self.state = 0
+        self.state = "grounded"
         self.spriteSheet = SpriteSheet()
         self.sheet = self.spriteSheet.split(f"assets/Characters/character{charNum}.png", 1, 4, 24, 24)
         self.frame = 0
@@ -31,17 +29,17 @@ class Player:
         self.gravityAcc = 0.6
         self.terminalVel = 8
         self.jumpStrength = -10
-        self.onGround = False
-        self.maxJumps = 1 
+        self.maxJumps = 1
         self.jumpsRemaining = self.maxJumps
         self.jumpHeld = False
-        self.falling = False
-    
+
     def respawn(self):
         self.x = self.spawnX
         self.y = self.spawnY
         self.rect.x = self.x
         self.rect.y = self.y
+        self.state = "grounded"
+        self.yVel = 0
 
     def render(self, surf):
         img = self.sheet[self.frame]
@@ -51,48 +49,36 @@ class Player:
             img = pygame.transform.flip(img, False, True)
         surf.blit(img, (self.x, self.y))
 
+
     def gravity(self, grid, enemies):
-        if not self.onGround:
-            self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
-            if not self.jumpHeld:
-                self.falling = True
-            else:
-                self.falling = False
-
+        self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
         self.rect.y += self.yVel
-        self.onGround = False
-        surrounding = grid.getSurroundingTiles(self.x, self.y)
+        surroundingTiles = grid.getSurroundingTiles(self.x, self.y)
 
-        for element in surrounding:
-            if element[0][0] == 68:
-                selfmask = pygame.mask.from_surface(self.img)
-                spikemask = pygame.mask.from_surface(Tile("0068", grid.tileSize, grid.tileSize, 1).img)
-                if selfmask.overlap(spikemask, (self.x - element[2][0], self.y - element[2][1])):
-                    self.respawn()
-                    return
-            else:
-                tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
-                if element[0][0] != -1 and self.rect.colliderect(tileRect):
-                    if self.yVel > 0:
-                        self.rect.bottom = tileRect.top
-                        self.onGround = True
-                        if self.falling == False:
-                            self.jumpsRemaining = self.maxJumps
-                        self.falling = False
-                    elif self.yVel < 0:
-                        self.rect.top = tileRect.bottom
+        isGrounded = False
+
+        for tile in surroundingTiles:
+            tileRect = pygame.Rect(tile[2][0], tile[2][1], grid.tileSize, grid.tileSize)
+            if tile[0][0] != -1 and self.rect.colliderect(tileRect):
+                if self.yVel > 0:
+                    self.rect.bottom = tileRect.top
+                    isGrounded = True
+                    self.jumpsRemaining = self.maxJumps
                     self.yVel = 0
-                    break
+                elif self.yVel < 0:
+                    self.rect.top = tileRect.bottom
+                    self.yVel = 0
+                break
 
+        self.state = "grounded" if isGrounded else "airborne"
 
         for enemy in enemies:
             enemyMask = pygame.mask.from_surface(enemy.img)
-            selfMask = pygame.mask.from_surface(self.img)
+            playerMask = pygame.mask.from_surface(self.img)
             offset = (self.x - enemy.x, self.y - enemy.y)
-            overlap = selfMask.overlap(enemyMask, offset)
-
+            overlap = playerMask.overlap(enemyMask, offset)
             if overlap:
-                if self.rect.bottom > enemy.rect.top and self.falling:
+                if self.state == "airborne" and self.yVel > 0:
                     enemies.remove(enemy)
                     self.yVel = self.jumpStrength
                     self.jumpsRemaining = 1
@@ -101,16 +87,17 @@ class Player:
                     return
 
         self.y = self.rect.y
+        if self.state == "airborne" and (self.yVel != 0.6 and self.yVel != 0.1):
+            self.jumpsRemaining = 0
 
     def jump(self):
-        if self.onGround or self.jumpsRemaining > 0:
+        if self.state == "grounded" or self.jumpsRemaining > 0:
             self.yVel = self.jumpStrength
-            self.onGround = False
-            self.jumpsRemaining -= 1
-            self.falling = True
+            self.state = "airborne"
+            if self.jumpsRemaining > 0:
+                self.jumpsRemaining -= 1
 
-
-    def moveX(self, dx, grid,screen):
+    def moveX(self, dx, grid, screen):
         if dx != 0:
             self.xVel += self.acc * dx
             self.xVel = max(-self.maxspeed, min(self.xVel, self.maxspeed))
@@ -134,32 +121,22 @@ class Player:
         surrounding = grid.getSurroundingTiles(self.x, self.y)
 
         for element in surrounding:
-            if element[0][0] == 68:
-                selfmask = pygame.mask.from_surface(self.img)
-                spikemask = pygame.mask.from_surface(Tile("0068",grid.tileSize,grid.tileSize,1).img)
-                if selfmask.overlap(spikemask,(self.x - element[2][0],self.y - element[2][1])):
-                    self.respawn()
-            else:
-                tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
-                if element[0][0] != -1 and self.rect.colliderect(tileRect):
-                    if self.xVel > 0:
-                        self.rect.right = tileRect.left
-                    elif self.xVel < 0:
-                        self.rect.left = tileRect.right
-                    self.xVel = 0
-                    break
+            tileRect = pygame.Rect(element[2][0], element[2][1], grid.tileSize, grid.tileSize)
+            if element[0][0] != -1 and self.rect.colliderect(tileRect):
+                if self.xVel > 0:
+                    self.rect.right = tileRect.left
+                elif self.xVel < 0:
+                    self.rect.left = tileRect.right
+                self.xVel = 0
+                break
 
         self.x = self.rect.x
-        if self.x < 0:
-            self.x = 0
-        if self.x > (screen.get_width() - self.playerX):
-            self.x = screen.get_width() - self.playerX
+        self.x = max(0, min(self.x, screen.get_width() - self.playerX))
 
     def update(self, dx, grid, screen, enemies, jump=False):
         self.render(screen)
         self.moveX(dx, grid, screen)
-        self.gravity(grid,enemies)
-
+        self.gravity(grid, enemies)
         if jump:
             if not self.jumpHeld:
                 self.jumpHeld = True
