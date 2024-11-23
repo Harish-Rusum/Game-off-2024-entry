@@ -33,9 +33,10 @@ class Player:
         self.maxJumps = 1
         self.jumpsRemaining = self.maxJumps
         self.jumpHeld = False
-        self.extraJumpStrength = 2
         self.coyoteTime = 0.15
         self.coyoteTimer = 0
+        self.groundedBuffer = False
+        self.extraJumpStrength = 1.5
 
     def respawn(self):
         self.x = self.spawnX
@@ -56,54 +57,61 @@ class Player:
     def gravity(self, grid, enemies):
         self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
         self.rect.y += self.yVel
-        surroundingTiles = grid.getSurroundingTiles(self.x, self.y)
 
+        surroundingTiles = grid.getSurroundingTiles(self.x, self.y)
         isGrounded = False
 
         for tile in surroundingTiles:
             tileRect = pygame.Rect(tile[2][0], tile[2][1], grid.tileSize, grid.tileSize)
             if tile[0][0] != -1 and self.rect.colliderect(tileRect):
-                if self.yVel > 0:
+                if self.yVel > 0: 
                     self.rect.bottom = tileRect.top
-                    isGrounded = True
-                    self.jumpsRemaining = self.maxJumps
                     self.yVel = 0
+                    isGrounded = True
                 elif self.yVel < 0:
                     self.rect.top = tileRect.bottom
                     self.yVel = 0
                 break
 
-        self.state = "grounded" if isGrounded else "airborne"
-
         if isGrounded:
+            self.state = "grounded"
+            self.jumpsRemaining = self.maxJumps
             self.coyoteTimer = 0
         else:
-            self.coyoteTimer += 1 / 60
+            if self.state == "grounded":
+                self.coyoteTimer += 1 / 60
+            if self.coyoteTimer > self.coyoteTime:
+                self.state = "airborne"
 
         for enemy in enemies:
-            enemyMask = pygame.mask.from_surface(enemy.img)
+            enemyMask = pygame.mask.from_surface(enemy.frames[enemy.state])
             playerMask = pygame.mask.from_surface(self.img)
             offset = (self.x - enemy.x, self.y - enemy.y)
             overlap = playerMask.overlap(enemyMask, offset)
+
             if overlap:
-                if self.state == "airborne" and self.yVel > 0:
-                    enemies.remove(enemy)
-                    self.yVel = (self.jumpStrength - self.extraJumpStrength)
-                else:
-                    self.respawn()
-                    return
+                if not enemy.dead:
+                    if self.state == "airborne" and self.yVel > 0:
+                        enemy.die()
+                        self.yVel = self.jumpStrength - self.extraJumpStrength
+                    else:
+                        self.respawn()
+                        return
 
         self.y = self.rect.y
-        if self.state == "airborne" and (self.yVel != 0.6 and self.yVel != 0.1):
-            self.jumpsRemaining = 0
 
     def jump(self):
-        if self.state == "grounded" or self.jumpsRemaining > 0 or self.coyoteTimer < self.coyoteTime:
+        canJump = (
+            (self.state == "grounded" or self.coyoteTimer < self.coyoteTime)
+            and self.jumpsRemaining > 0
+        )
+
+        if canJump:
             self.yVel = self.jumpStrength
             self.state = "airborne"
             if self.jumpsRemaining > 0:
                 self.jumpsRemaining -= 1
-            self.coyoteTimer = 0
+            self.coyoteTimer = self.coyoteTime
 
     def moveX(self, dx, grid, screen):
         if dx != 0:
