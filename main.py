@@ -20,7 +20,6 @@ Black = "#000000"
 
 # matrix = [[[(-1, -1), (-1, -1), (0,0), (-1, -1)] for _ in range(TilesX)] for _ in range(TilesY)]
 from levels.thing import matrix
-from levels.thing import enemies
 
 screen = pygame.display.set_mode((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
@@ -31,7 +30,9 @@ fov = Overlay(ScreenX, ScreenY, 200, [ScreenX // 2, ScreenY // 2])
 player = Player(TileSize, TileSize,1,0,360)
 cursor = Cursor()
 
-enemies = [Enemy(*x) for x in enemies]
+enemies = [
+    Enemy((240,520),(240,360),1,"right")
+]
 pygame.mixer.music.load("assets/Music/bgm.mp3")
 pygame.mixer.music.play(loops=-1)
 pygame.mixer.music.set_volume(0.2)
@@ -87,6 +88,11 @@ def main():
                 pygame.mixer.music.set_volume(0.5+menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0)
+
+        if menu.reset:
+            player.reset()
+            for enemy in enemies:
+                enemy.reset()
 
         for entity in enemies:
             entity.update(screen)

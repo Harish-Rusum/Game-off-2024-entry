@@ -1,22 +1,27 @@
-
 import pygame
 from utils.spritesheet import SpriteSheet
 
 class Player:
     def __init__(self, playerX, playerY, charNum, spawnX, spawnY):
+        self.playerX = playerX
+        self.playerY = playerY
+        self.charNum = charNum
         self.spawnX = spawnX
         self.spawnY = spawnY
-        self.x = spawnX
-        self.y = spawnY
+        self.reset()
+
+    def reset(self):
+        self.x = self.spawnX
+        self.y = self.spawnY
         self.state = "grounded"
         self.spriteSheet = SpriteSheet()
-        self.sheet = self.spriteSheet.split(f"assets/Characters/character{charNum}.png", 1, 4, 24, 24)
+        self.sheet = self.spriteSheet.split(f"assets/Characters/character{self.charNum}.png", 1, 4, 24, 24)
         self.frame = 0
         self.animationFrames = 4
         self.direction = 0
         self.counter = 0
-        self.playerX = playerX
-        self.playerY = playerY
+        self.playerX = self.playerX
+        self.playerY = self.playerY
         self.img = self.sheet[self.frame]
         self.img = pygame.transform.smoothscale(self.img, (self.playerX, self.playerY))
         self.rect = self.img.get_rect()

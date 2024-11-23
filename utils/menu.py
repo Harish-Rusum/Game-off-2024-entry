@@ -6,6 +6,7 @@ class Menu:
         self.overlay = pygame.Surface(surf.get_size(), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 200))
         self.holdingEsc = False
+        self.reset = False
 
         rawButtons = [
             "back.png", "exit.png", "mute.png", "unmute.png", "volUp.png", "volDown.png"
