@@ -1,4 +1,5 @@
 import pygame
+import random
 import sys
 from scripts.levelManager import LevelManager
 from scripts.player import Player
@@ -16,7 +17,8 @@ ScreenX, ScreenY = TileSize * ViewX, TileSize * ViewY
 Fps = 60
 Black = "#000000"
 
-screen = pygame.display.set_mode((ScreenX, ScreenY))
+display = pygame.display.set_mode((ScreenX, ScreenY))
+screen = pygame.surface.Surface((ScreenX,ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
@@ -36,6 +38,9 @@ def main():
     pauseMenu = False
     holdingEsc = False
     menu = Menu(screen)
+    renderOffset = [0,0]
+    screenShake = False
+    screenShakeTimer = 0.5
 
     while running:
         screen.fill(Black)
@@ -69,6 +74,9 @@ def main():
         if not menu.menuOpen:
             player.update(right, lManager.grid, screen, lManager.enemies, jump=jump)
             for enemy in lManager.enemies:
+                if enemy.deadTime <  0.5:
+                    if enemy.deadTime != 0:
+                        screenShake = True
                 enemy.update(screen)
 
             timer.tick(screen)
@@ -98,6 +106,18 @@ def main():
         timer.render(screen)
         menu.render()
         cursor.render(screen)
+
+        if screenShake:
+            renderOffset[0] = random.randint(0,8) - 4
+            renderOffset[1] = random.randint(0,8) - 4
+            screenShakeTimer -= 0.5
+
+        if screenShakeTimer <= 0:
+            screenShake = False
+            screenShakeTimer = 2
+            renderOffset = [0,0]
+
+        display.blit(screen,renderOffset)
         pygame.display.flip()
         clock.tick(Fps)
 
@@ -107,3 +127,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

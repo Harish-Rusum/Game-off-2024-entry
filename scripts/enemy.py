@@ -13,16 +13,16 @@ class Enemy:
         self.y = self.pos[1]
         self.characters = {
             1: [
-                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0018.png').convert_alpha(), (40, 40)),
-                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0019.png').convert_alpha(), (40, 40)),
-                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0020.png').convert_alpha(), (40, 40)),
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0018.png').convert_alpha(), (50, 50)),
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0019.png').convert_alpha(), (50, 50)),
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0020.png').convert_alpha(), (50, 50)),
             ]
         }
         self.frames = self.characters[self.num]
         self.state = 0
         self.rect = self.frames[self.state].get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.x = self.x-10
+        self.rect.y = self.y-10
         self.rightMax = self.moveRange[1]
         self.leftMax = self.moveRange[0]
         self.xVel = 0
@@ -30,7 +30,7 @@ class Enemy:
         self.acceleration = 0.05
         self.deceleration = 0.1
         self.dead = False
-        self.deadTime = 0.1
+        self.deadTime = 0.5
         self.animationTimer = 0
 
     def flip(self,direction):
@@ -60,8 +60,8 @@ class Enemy:
         if self.animationTimer % 10 == 0:
             self.state = (self.state + 1) % len(self.frames)
 
-        self.rect.x = round(self.x)
-        self.rect.y = self.y
+        self.rect.x = round(self.x) - 10
+        self.rect.y = self.y - 10
 
     def die(self):
         self.dead = True

@@ -133,7 +133,7 @@ class Player:
         elif dx < 0:
             self.direction = -1
 
-        if self.counter % 10 == 0:
+        if self.counter % 5 == 0:
             self.frame = (self.frame + 1) % self.animationFrames
         self.counter += 1
 
