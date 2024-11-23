@@ -9,7 +9,7 @@ class Menu:
         self.reset = False
 
         rawButtons = [
-            "back.png", "exit.png", "mute.png", "unmute.png", "volUp.png", "volDown.png"
+            "back.png", "exit.png", "mute.png", "unmute.png", "volUp.png", "volDown.png", "restart.png"
         ]
         self.buttons = [
             pygame.transform.smoothscale(
@@ -55,6 +55,9 @@ class Menu:
         elif i == 4 and not self.volDownHeld:
             self.soundChange -= 0.1
             self.volDownHeld = True
+        if i == 5:
+            self.reset = True
+            self.menuOpen = False
 
     def render(self):
         mouseX, mouseY = pygame.mouse.get_pos()

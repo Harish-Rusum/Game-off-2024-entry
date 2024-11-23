@@ -93,6 +93,7 @@ def main():
             player.reset()
             for enemy in enemies:
                 enemy.reset()
+            menu.reset = False
 
         for entity in enemies:
             entity.update(screen)
