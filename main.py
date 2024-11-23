@@ -84,24 +84,28 @@ def main():
                 pygame.mixer.music.set_volume(0.2+menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0+menu.soundChange)
+
+            timer.tick(screen)
         else:
             if not menu.mute:
                 pygame.mixer.music.set_volume(0.5+menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0)
 
+
         if menu.reset:
             player.reset()
             for enemy in enemies:
                 enemy.reset()
+            timer.reset()
             menu.reset = False
 
         for entity in enemies:
             entity.update(screen)
 
-        timer.tick(screen)
         fov.render(screen,[player.x+player.img.get_width() // 2,player.y + player.img.get_height() // 2])
 
+        timer.render(screen)
         menu.render()
         cursor.render(screen)
         pygame.display.flip()
