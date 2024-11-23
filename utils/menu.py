@@ -9,7 +9,7 @@ class Menu:
         self.reset = False
 
         rawButtons = [
-            "back.png", "exit.png", "mute.png", "unmute.png", "volUp.png", "volDown.png", "restart.png"
+            "back.png", "exit.png", "mute.png", "unmute.png", "volUp.png", "volDown.png", "reset.png"
         ]
         self.buttons = [
             pygame.transform.smoothscale(
