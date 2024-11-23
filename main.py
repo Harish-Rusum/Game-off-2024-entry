@@ -6,6 +6,7 @@ from scripts.cursor import Cursor
 from scripts.enemy import Enemy
 from utils.fov import Overlay
 from utils.menu import Menu
+from utils.timer import Timer
 # from levels.thing import matrix
 
 pygame.init()
@@ -29,7 +30,7 @@ grid = Grid(TilesX, TilesY, TileSize, matrix, ScreenX, ScreenY)
 fov = Overlay(ScreenX, ScreenY, 200, [ScreenX // 2, ScreenY // 2])
 player = Player(TileSize, TileSize,1,0,360)
 cursor = Cursor()
-
+timer = Timer(ScreenX,ScreenY)
 enemies = [
     Enemy((240,520),(240,360),1,"right")
 ]
@@ -97,10 +98,11 @@ def main():
 
         for entity in enemies:
             entity.update(screen)
+
+        timer.tick(screen)
         fov.render(screen,[player.x+player.img.get_width() // 2,player.y + player.img.get_height() // 2])
 
         menu.render()
-
         cursor.render(screen)
         pygame.display.flip()
         clock.tick(Fps)

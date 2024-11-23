@@ -53,6 +53,8 @@ class Grid:
             for x in range(startX, endX):
                 tileIndex, rotation = self.grid[y][x][3]
                 tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
+                if tileIndexStr == "empty":
+                    continue
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 self.grid[y][x][2] = (x * self.tileSize, y * self.tileSize)
                 screen.blit(tile.img, (self.grid[y][x][2]))
@@ -62,8 +64,7 @@ class Grid:
                 tileIndex, rotation = self.grid[y][x][0]
                 tileIndexStr = "empty" if tileIndex == -1 else f"{tileIndex:04d}"
                 if tileIndexStr == "empty":
-                    if self.grid[y][x][3] != (-1, -1):
-                        continue
+                    continue
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 self.grid[y][x][2] = (x * self.tileSize, y * self.tileSize)
                 screen.blit(tile.img, (self.grid[y][x][2]))
