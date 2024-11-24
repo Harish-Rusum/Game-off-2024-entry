@@ -51,13 +51,13 @@ class Player:
         self.state = "grounded"
         self.yVel = 0
 
-    def render(self, surf):
+    def render(self, surf,offset=[0,0]):
         img = self.sheet[self.frame]
         img = pygame.transform.smoothscale(img, (self.playerX, self.playerY))
         if self.direction == -1:
             img = pygame.transform.rotate(img, -180)
             img = pygame.transform.flip(img, False, True)
-        surf.blit(img, (self.x, self.y))
+        surf.blit(img, (self.x+offset[0], self.y+offset[1]))
 
     def gravity(self, grid, enemies):
         self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)

@@ -41,7 +41,7 @@ def main():
     renderOffset = [0,0]
     screenShake = False
     screenShakeTimer = 0.5
-
+    global lManager
     while running:
         screen.fill(Black)
         right = 0
@@ -86,7 +86,7 @@ def main():
             else:
                 pygame.mixer.music.set_volume(0.0 + menu.soundChange)
 
-            if (player.x, player.y) == lManager.goal:
+            if lManager.goal[0] <= player.x <= lManager.goal[1] and lManager.goal[2] <= player.y <= lManager.goal[3]:
                 lManager.nextLevel()
                 player.reset()
                 menu.reset = True
@@ -120,11 +120,10 @@ def main():
         display.blit(screen,renderOffset)
         pygame.display.flip()
         clock.tick(Fps)
-
+    
     pygame.quit()
     sys.exit()
 
 
 if __name__ == "__main__":
     main()
-

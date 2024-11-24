@@ -39,9 +39,9 @@ class Enemy:
         if direction == "left":
             return pygame.transform.flip(self.frames[self.state], False, False)
 
-    def render(self, surf):
+    def render(self, surf,offset=[0,0]):
         img = self.flip(self.direction)
-        surf.blit(img, self.rect)
+        surf.blit(img, (self.rect.x+offset[0],self.rect.y+offset[1]))
 
     def move(self):
         if self.direction == "right":

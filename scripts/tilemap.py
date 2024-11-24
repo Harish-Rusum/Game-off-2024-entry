@@ -43,7 +43,7 @@ class Grid:
                 self.grid[y][x][2] = matrix[y][x][2]
                 self.grid[y][x][3] = matrix[y][x][3]
 
-    def render(self, screen):
+    def render(self, screen,offset=[0,0]):
         startX = 0
         startY = 0
         endX = self.tilesX
@@ -57,7 +57,7 @@ class Grid:
                     continue
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 self.grid[y][x][2] = (x * self.tileSize, y * self.tileSize)
-                screen.blit(tile.img, (self.grid[y][x][2]))
+                screen.blit(tile.img, (self.grid[y][x][2][0]+offset[0],self.grid[y][x][2][1]+offset[1]))
 
         for y in range(startY, endY):
             for x in range(startX, endX):
@@ -67,7 +67,7 @@ class Grid:
                     continue
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 self.grid[y][x][2] = (x * self.tileSize, y * self.tileSize)
-                screen.blit(tile.img, (self.grid[y][x][2]))
+                screen.blit(tile.img, (self.grid[y][x][2][0]+offset[0],self.grid[y][x][2][1]+offset[1]))
 
         for y in range(startY, endY):
             for x in range(startX, endX):
@@ -77,7 +77,7 @@ class Grid:
                     continue
                 tile = Tile(tileIndexStr, self.tileSize, self.tileSize, rotation)
                 self.grid[y][x][2] = (x * self.tileSize, y * self.tileSize)
-                screen.blit(tile.img, (self.grid[y][x][2]))
+                screen.blit(tile.img, (self.grid[y][x][2][0]+offset[0],self.grid[y][x][2][1]+offset[1]))
 
     def getSurroundingTiles(self, screen_x, screen_y):
         center_tile_x = int(screen_x // self.tileSize)

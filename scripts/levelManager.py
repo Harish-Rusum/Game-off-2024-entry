@@ -3,6 +3,7 @@ from scripts.tilemap import Grid
 
 from levels.level1 import matrix as level1
 from levels.level2 import matrix as level2
+from levels.level3 import matrix as level3
 
 from copy import deepcopy
 
@@ -12,12 +13,17 @@ class LevelManager:
             1: {
                 "enemies": [Enemy((240, 520), (240, 360), 1, "right")],
                 "matrix": level1,
-                "goal": (760, 320),
+                "goal": (740, 780, 300, 340),  # x_min, x_max, y_min, y_max
             },
             2: {
                 "enemies": [Enemy((440, 240), (440, 560), 1, "right")],
                 "matrix": level2,
-                "goal": (760, 400),
+                "goal": (740, 780, 380, 420),
+            },
+            3: {
+                "enemies": [Enemy((510, 400), (510, 760), 1, "right")],
+                "matrix": level3,
+                "goal": (415, 455, 180, 220),
             },
         }
         self.currentLevel = 1
@@ -43,8 +49,8 @@ class LevelManager:
         self.goal = levelData["goal"]
 
     def nextLevel(self):
-        if self.currentLevel+1 in self.levels:
-            self.loadLevel(self.currentLevel+1)
+        if self.currentLevel + 1 in self.levels:
+            self.loadLevel(self.currentLevel + 1)
             self.currentLevel += 1
         else:
             self.resetLevel()

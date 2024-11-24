@@ -19,8 +19,8 @@ screen = pygame.display.set_mode((screenX, screenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 
-matrix = [[[(-1, -1), (-1, -1), (0,0), (-1, -1)] for _ in range(tilesX)] for _ in range(tilesY)]
-# from level2 import matrix
+# matrix = [[[(-1, -1), (-1, -1), (0,0), (-1, -1)] for _ in range(tilesX)] for _ in range(tilesY)]
+from level3 import matrix
 
 from tilemap import Grid, Palette
 
