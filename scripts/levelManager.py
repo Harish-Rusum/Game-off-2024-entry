@@ -32,9 +32,9 @@ class LevelManager:
         self.tilesX, self.tilesY = 40, 40
         self.screenX, self.tilesY = self.tileSize * self.viewX, self.tileSize * self.viewY
         self.screen = screen
-        self.grid = None
+        self.grid = []
         self.enemies = []
-        self.goal = None
+        self.goal = Grid(self.tilesX,self.tilesY,self.tileSize,[],screenWidth=self.screenX,screenHeight=self.tileSize)
         self.loadLevel(self.currentLevel)
 
     def resetLevel(self):

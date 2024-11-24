@@ -2,27 +2,37 @@ import pygame
 import time
 
 class Transition:
-    def __init__(self, screen, duration=2):
-        self.screen = screen
+    def __init__(self, duration=2, color="#000000"):
         self.duration = duration
-        self.start_time = None
+        self.startTime = None
         self.active = False
+        self.color = color
+        self.alpha = 255  
+        self.surface = None
 
     def start(self):
-        """
-        Starts the transition.
-        """
-        self.start_time = time.time()
+        self.startTime = time.time()
         self.active = True
+        self.alpha = 255  
 
     def update(self):
         if self.active:
-            current_time = time.time()
-            elapsed_time = current_time - self.start_time
-            if elapsed_time >= self.duration:
-                self.active = False
+            currentTime = time.time()
+            if self.startTime != None:
+                elapsedTime = currentTime - self.startTime
+                progress = elapsedTime / self.duration
 
-    def render(self):
+                if progress >= 1.0:
+                    self.active = False
+                    self.alpha = 0  
+                else:
+                    
+                    self.alpha = int(255 * (1 - progress))
+
+    def render(self, surf):
         if self.active:
-            self.screen.fill("#000000")
-            pygame.display.flip()
+            if self.surface is None:
+                self.surface = pygame.Surface(surf.get_size()).convert_alpha()
+            self.surface.fill(self.color)
+            self.surface.set_alpha(self.alpha)
+            surf.blit(self.surface, (0, 0))

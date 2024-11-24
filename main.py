@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 from scripts.levelManager import LevelManager
+from scripts.levelTransition import Transition
 from scripts.player import Player
 from scripts.cursor import Cursor
 from utils.fov import Overlay
@@ -24,27 +25,26 @@ clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 
 lManager = LevelManager(screen)
-player = Player(TileSize, TileSize, 1, 0, 360)
+player = Player(TileSize, TileSize, 1, 0, 400)
 cursor = Cursor()
 fov = Overlay(ScreenX, ScreenY, 200, [ScreenX // 2, ScreenY // 2])
 timer = Timer(ScreenX, ScreenY)
+transition = Transition()
 pygame.mixer.music.load("assets/Music/bgm.mp3")
 pygame.mixer.music.play(loops=-1)
 pygame.mixer.music.set_volume(0.2)
-
 
 def main():
     running = True
     pauseMenu = False
     holdingEsc = False
     menu = Menu(screen)
-    renderOffset = [0,0]
+    renderOffset = [0, 0]
     screenShake = False
     screenShakeTimer = 0.5
-    global lManager
+
     while running:
         screen.fill(Black)
-        right = 0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -53,6 +53,7 @@ def main():
         keys = pygame.key.get_pressed()
         jump = keys[pygame.K_w] or keys[pygame.K_k] or keys[pygame.K_UP]
 
+        right = 0
         if keys[pygame.K_a] or keys[pygame.K_h] or keys[pygame.K_LEFT]:
             right = -1
         elif keys[pygame.K_d] or keys[pygame.K_l] or keys[pygame.K_RIGHT]:
@@ -65,18 +66,17 @@ def main():
         else:
             holdingEsc = False
 
-        screen.fill(Black)
         lManager.grid.render(screen)
         player.render(screen)
 
         if menu.exit:
             running = False
-        if not menu.menuOpen:
+
+        if not menu.menuOpen and not transition.active:
             player.update(right, lManager.grid, screen, lManager.enemies, jump=jump)
             for enemy in lManager.enemies:
-                if enemy.deadTime <  0.5:
-                    if enemy.deadTime != 0:
-                        screenShake = True
+                if enemy.deadTime < 0.5 and enemy.deadTime != 0:
+                    screenShake = True
                 enemy.update(screen)
 
             timer.tick(screen)
@@ -86,8 +86,12 @@ def main():
             else:
                 pygame.mixer.music.set_volume(0.0 + menu.soundChange)
 
-            if lManager.goal[0] <= player.x <= lManager.goal[1] and lManager.goal[2] <= player.y <= lManager.goal[3]:
+            if (
+                lManager.goal[0] <= player.x <= lManager.goal[1]
+                and lManager.goal[2] <= player.y <= lManager.goal[3]
+            ):
                 lManager.nextLevel()
+                transition.start()
                 player.reset()
                 menu.reset = True
         else:
@@ -96,6 +100,7 @@ def main():
             else:
                 pygame.mixer.music.set_volume(0.0)
 
+        transition.update()
         if menu.reset:
             player.reset()
             lManager.resetLevel()
@@ -108,22 +113,24 @@ def main():
         cursor.render(screen)
 
         if screenShake:
-            renderOffset[0] = random.randint(0,8) - 4
-            renderOffset[1] = random.randint(0,8) - 4
+            renderOffset[0] = random.randint(0, 8) - 4
+            renderOffset[1] = random.randint(0, 8) - 4
             screenShakeTimer -= 0.5
 
         if screenShakeTimer <= 0:
             screenShake = False
             screenShakeTimer = 2
-            renderOffset = [0,0]
+            renderOffset = [0, 0]
 
-        display.blit(screen,renderOffset)
+        display.blit(screen, renderOffset)
+
+        transition.render(display)
+
         pygame.display.flip()
         clock.tick(Fps)
-    
+
     pygame.quit()
     sys.exit()
-
 
 if __name__ == "__main__":
     main()
