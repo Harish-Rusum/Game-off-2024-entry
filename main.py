@@ -85,13 +85,12 @@ def main():
                 pygame.mixer.music.set_volume(0.2 + menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0 + menu.soundChange)
-
             if (
                 lManager.goal[0] <= player.x <= lManager.goal[1]
                 and lManager.goal[2] <= player.y <= lManager.goal[3]
             ):
+                transition.start(timer.time)
                 lManager.nextLevel()
-                transition.start()
                 player.reset()
                 menu.reset = True
         else:
@@ -100,7 +99,6 @@ def main():
             else:
                 pygame.mixer.music.set_volume(0.0)
 
-        transition.update()
         if menu.reset:
             player.reset()
             lManager.resetLevel()
@@ -109,8 +107,11 @@ def main():
 
         fov.render(screen, [player.x + player.img.get_width() // 2, player.y + player.img.get_height() // 2])
         timer.render(screen)
+
+        transition.update()
+        transition.render(screen)
         menu.render()
-        cursor.render(screen)
+
 
         if screenShake:
             renderOffset[0] = random.randint(0, 8) - 4
@@ -122,9 +123,9 @@ def main():
             screenShakeTimer = 2
             renderOffset = [0, 0]
 
+        cursor.render(screen)
         display.blit(screen, renderOffset)
 
-        transition.render(display)
 
         pygame.display.flip()
         clock.tick(Fps)
