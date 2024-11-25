@@ -4,7 +4,7 @@ import time
 
 
 class Transition:
-    def __init__(self, duration=2, color=(0, 0, 0)):
+    def __init__(self, duration=1, color=(0, 0, 0)):
         self.duration = duration
         self.startTime = None
         self.active = False
@@ -14,7 +14,7 @@ class Transition:
         self.done = False
         self.font = pygame.font.Font("assets/Fonts/font.ttf", 70)
         self.counter = 0
-        self.show_text = True
+        self.showText = True
 
     def start(self, timeSpent):
         self.startTime = None 
@@ -23,16 +23,16 @@ class Transition:
         self.timer = timeSpent
         self.done = False
         self.counter = 0
-        self.show_text = True
+        self.showText = True
 
     def update(self):
         if self.active:
             self.counter += 1 
 
-            if self.counter > 200:
-                self.show_text = False
+            if self.counter > 75:
+                self.showText = False
 
-            if self.counter > 220:
+            if self.counter > 75:
                 if self.startTime is None: 
                     self.startTime = time.time()
 
@@ -54,7 +54,7 @@ class Transition:
 
             surf.blit(self.surface, (0, 0))
 
-            if self.show_text:
+            if self.showText:
                 minutes = self.timer // 60
                 seconds = self.timer % 60
                 timeText = self.font.render(
@@ -62,6 +62,6 @@ class Transition:
                 )
                 textPos = (
                     surf.get_width() // 2 - timeText.get_width() // 2,
-                    surf.get_height() // 2 - timeText.get_height() // 2 - 150,
+                    surf.get_height() // 2 - timeText.get_height() // 2 - 100,
                 )
                 surf.blit(timeText, textPos)

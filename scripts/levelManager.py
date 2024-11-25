@@ -4,6 +4,8 @@ from scripts.tilemap import Grid
 from levels.level1 import matrix as level1
 from levels.level2 import matrix as level2
 from levels.level3 import matrix as level3
+from levels.level4 import matrix as level4
+from levels.level5 import matrix as level5
 
 from copy import deepcopy
 
@@ -13,7 +15,7 @@ class LevelManager:
             1: {
                 "enemies": [Enemy((240, 520), (240, 360), 1, "right")],
                 "matrix": level1,
-                "goal": (740, 780, 300, 340),  # x_min, x_max, y_min, y_max
+                "goal": (740, 780, 300, 340),
             },
             2: {
                 "enemies": [Enemy((440, 240), (440, 560), 1, "right")],
@@ -24,6 +26,21 @@ class LevelManager:
                 "enemies": [Enemy((510, 400), (510, 760), 1, "right")],
                 "matrix": level3,
                 "goal": (415, 455, 180, 220),
+            },
+            4: {
+                "enemies": [
+                    Enemy((240, 520,), (240, 480,), 1, "right"),
+                    Enemy((515, 400,), (515, 760,), 1, "right"),
+                ],
+                "matrix": level4,
+                "goal": (240, 280, 200, 240),
+            },
+            5: {
+                "enemies": [
+                    Enemy((240, 520), (240, 440), 1, "right"),
+                ],
+                "matrix": level5,
+                "goal": (510, 550, 240, 280),
             },
         }
         self.currentLevel = 1
