@@ -1,6 +1,7 @@
 import pygame
 from scripts.enemy import Enemy
 from scripts.tilemap import Grid
+from utils.spritesheet import SpriteSheet
 
 from levels.level1 import matrix as level1
 from levels.level2 import matrix as level2
@@ -61,7 +62,7 @@ class LevelManager:
                 "goal": (760, 780, 400, 420),
             },
         }
-        self.currentLevel = 7
+        self.currentLevel = 1
         self.tileSize = 40
         self.viewX, self.viewY = 20, 15
         self.tilesX, self.tilesY = 40, 40
@@ -74,6 +75,11 @@ class LevelManager:
         self.loadLevel(self.currentLevel)
         minX, maxX, minY, maxY = self.goal
         self.goalRect = pygame.Rect(minX, minY, maxX - minX, maxY - minY)
+
+        self.sheet = SpriteSheet().split("assets/nextLevel/diamond.png",1,8,32,32)
+        self.frame = 0
+        self.animationTimer = 0
+        self.goalImg = self.sheet[self.frame]
 
     def resetLevel(self):
         self.loadLevel(self.currentLevel)
@@ -96,4 +102,9 @@ class LevelManager:
         self.goalRect = pygame.Rect(minX, minY, maxX - minX, maxY - minY)
 
     def drawGoal(self,surf):
-        pygame.draw.rect(surf, (255, 255, 255), self.goalRect)
+        self.animationTimer = (self.animationTimer + 1) % 1000
+        if self.animationTimer % 10 == 0:
+            self.frame = (self.frame + 1) % 7
+            self.goalImg = self.sheet[self.frame]
+
+        surf.blit(self.goalImg,self.goalRect)

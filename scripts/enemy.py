@@ -28,6 +28,7 @@ class Enemy:
                 pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0017.png').convert_alpha(), (50, 50)),
             ]
         }
+
         self.frames = self.characters[self.enemyType]
         self.state = 0
         self.rect = self.frames[self.state].get_rect()
