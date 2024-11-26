@@ -1,10 +1,10 @@
 import pygame
 
 class Enemy:
-    def __init__(self, pos, moveRange, num, direction):
+    def __init__(self, pos, moveRange, enemyType, direction):
         self.pos = pos
         self.moveRange = moveRange
-        self.num = num
+        self.enemyType = enemyType
         self.direction = direction
         self.reset()
 
@@ -21,43 +21,44 @@ class Enemy:
                 pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0025.png').convert_alpha(), (50, 50)),
                 pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0026.png').convert_alpha(), (50, 50)),
                 pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0026.png').convert_alpha(), (50, 50)),
+            ],
+            3: [
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0015.png').convert_alpha(), (50, 50)),
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0016.png').convert_alpha(), (50, 50)),
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0017.png').convert_alpha(), (50, 50)),
             ]
         }
-        self.frames = self.characters[self.num]
+        self.frames = self.characters[self.enemyType]
         self.state = 0
         self.rect = self.frames[self.state].get_rect()
         self.rect.x = self.x-10
         self.rect.y = self.y-10
         self.rightMax = self.moveRange[1]
         self.leftMax = self.moveRange[0]
-        self.xVel = 0
         self.maxVel = 2
-        self.acceleration = 0.05
-        self.deceleration = 0.1
         self.dead = False
         self.deadTime = 0.5
         self.animationTimer = 0
 
-    def flip(self,direction):
+    def flip(self, direction):
         if direction == "right":
             return pygame.transform.flip(self.frames[self.state], True, False)
         if direction == "left":
             return pygame.transform.flip(self.frames[self.state], False, False)
 
-    def render(self, surf,offset=[0,0]):
+    def render(self, surf, offset=[0, 0]):
         img = self.flip(self.direction)
-        surf.blit(img, (self.rect.x+offset[0],self.rect.y+offset[1]))
+        surf.blit(img, (self.rect.x + offset[0], self.rect.y + offset[1]))
 
     def move(self):
+        step = self.maxVel
         if self.direction == "right":
-            self.xVel = min(self.xVel + self.acceleration, self.maxVel)
-            self.x += self.xVel
+            self.x += step
             if self.x >= self.rightMax:
                 self.x = self.rightMax
                 self.direction = "left"
         elif self.direction == "left":
-            self.xVel = min(self.xVel + self.acceleration, self.maxVel)
-            self.x -= self.xVel
+            self.x -= step
             if self.x <= self.leftMax:
                 self.x = self.leftMax
                 self.direction = "right"

@@ -97,8 +97,12 @@ class Player:
             if overlap:
                 if not enemy.dead:
                     if self.state == "airborne" and self.yVel > 0:
-                        enemy.die()
-                        self.yVel = self.jumpStrength - self.extraJumpStrength
+                        if enemy.enemyType != 3:
+                            enemy.die()
+                            self.yVel = self.jumpStrength - self.extraJumpStrength
+                        else:
+                            self.respawn()
+                            return
                     else:
                         self.respawn()
                         return
