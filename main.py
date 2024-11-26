@@ -1,6 +1,8 @@
 import pygame
 import random
 import sys
+
+from pygame.mixer_music import play
 from scripts.levelManager import LevelManager
 from scripts.levelTransition import Transition
 from scripts.player import Player
@@ -85,14 +87,12 @@ def main():
                 pygame.mixer.music.set_volume(0.2 + menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0 + menu.soundChange)
-            if (
-                lManager.goal[0] <= player.x <= lManager.goal[1]
-                and lManager.goal[2] <= player.y <= lManager.goal[3]
-            ):
+            if player.rect.colliderect(lManager.goalRect):
                 transition.start(timer.time)
                 lManager.nextLevel()
                 player.reset()
                 menu.reset = True
+            lManager.drawGoal(screen)
         else:
             if not menu.mute:
                 pygame.mixer.music.set_volume(0.5 + menu.soundChange)
@@ -129,7 +129,7 @@ def main():
 
         pygame.display.flip()
         clock.tick(Fps)
-
+        print(player.x,player.y)
     pygame.quit()
     sys.exit()
 

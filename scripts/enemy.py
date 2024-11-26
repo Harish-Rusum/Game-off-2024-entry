@@ -16,6 +16,11 @@ class Enemy:
                 pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0018.png').convert_alpha(), (50, 50)),
                 pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0019.png').convert_alpha(), (50, 50)),
                 pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0020.png').convert_alpha(), (50, 50)),
+            ],
+            2: [
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0025.png').convert_alpha(), (50, 50)),
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0026.png').convert_alpha(), (50, 50)),
+                pygame.transform.smoothscale(pygame.image.load('assets/Characters/tile_0026.png').convert_alpha(), (50, 50)),
             ]
         }
         self.frames = self.characters[self.num]
@@ -57,7 +62,7 @@ class Enemy:
                 self.x = self.leftMax
                 self.direction = "right"
 
-        if self.animationTimer % 10 == 0:
+        if self.animationTimer % 8 == 0:
             self.state = (self.state + 1) % len(self.frames)
 
         self.rect.x = round(self.x) - 10
