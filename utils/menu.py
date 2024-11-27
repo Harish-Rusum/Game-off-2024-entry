@@ -18,7 +18,7 @@ class Menu:
             ) for name in rawButtons
         ]
         self.exit = False
-        self.mute = True
+        self.mute = False
         self.buttonStates = [
             (self.buttons[:3] + self.buttons[4:]),
             (self.buttons[:2] + self.buttons[3:])
