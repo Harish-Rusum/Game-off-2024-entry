@@ -59,9 +59,12 @@ def main():
                 elif event.key == pygame.K_RETURN:
                     mainMenu.select()
 
-        mainMenu.render(display)
+        mainMenu.render(screen)
+        cursor.render(screen)
+        display.blit(screen,(0,0))
         pygame.display.flip()
         clock.tick(Fps)
+
     while running:
         screen.fill(Black)
 
