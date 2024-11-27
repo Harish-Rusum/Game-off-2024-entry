@@ -69,7 +69,7 @@ class LevelManager:
                 "goal": (200-10, 120-10),
             },
         }
-        self.currentLevel = 8
+        self.currentLevel = 1
         self.tileSize = 40
         self.viewX, self.viewY = 20, 15
         self.tilesX, self.tilesY = 40, 40
