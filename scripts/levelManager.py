@@ -12,8 +12,6 @@ from levels.level6 import matrix as level6
 from levels.level7 import matrix as level7
 from levels.level8 import matrix as level8
 
-from copy import deepcopy
-
 class LevelManager:
     def __init__(self, screen):
         self.levels = {
@@ -96,7 +94,7 @@ class LevelManager:
         if not levelData:
             return
         self.grid = Grid(self.tilesX, self.tilesY, self.tileSize, levelData["matrix"], self.screenX, self.tilesY)
-        self.enemies = deepcopy(levelData["enemies"])
+        self.enemies = [Enemy(enemy.pos,enemy.moveRange,enemy.enemyType,enemy.direction) for enemy in levelData["enemies"]]
         self.goal = levelData["goal"]
 
     def nextLevel(self):
