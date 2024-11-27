@@ -67,12 +67,21 @@ def main():
                 pauseMenu = not pauseMenu
         else:
             holdingEsc = False
-
+            
         lManager.grid.render(screen)
         player.render(screen)
 
         if menu.exit:
             running = False
+            
+        mouseX,mouseY = pygame.mouse.get_pos()
+        if pygame.mouse.get_pressed()[0]:
+            if mouseX > player.x:
+                right = 1
+            if mouseX < player.x:
+                right = -1
+            if mouseY < player.y:
+                jump = True
 
         if not menu.menuOpen and not transition.active:
             player.update(right, lManager.grid, screen, lManager.enemies, jump=jump)
