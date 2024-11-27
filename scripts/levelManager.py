@@ -10,6 +10,7 @@ from levels.level4 import matrix as level4
 from levels.level5 import matrix as level5
 from levels.level6 import matrix as level6
 from levels.level7 import matrix as level7
+from levels.level8 import matrix as level8
 
 from copy import deepcopy
 
@@ -61,8 +62,16 @@ class LevelManager:
                 "matrix": level7,
                 "goal": (760-10, 400-10),
             },
+            8: {
+                "enemies": [
+                    Enemy((200, 520), (200, 480), 3, "right"),
+                    Enemy((315, 240), (315, 415), 1, "right"),
+                ],
+                "matrix": level8,
+                "goal": (200-10, 120-10),
+            },
         }
-        self.currentLevel = 1
+        self.currentLevel = 8
         self.tileSize = 40
         self.viewX, self.viewY = 20, 15
         self.tilesX, self.tilesY = 40, 40

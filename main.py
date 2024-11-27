@@ -138,7 +138,7 @@ def main():
 
         pygame.display.flip()
         clock.tick(Fps)
-
+        print(player.x,player.y)
     pygame.quit()
     sys.exit()
 
