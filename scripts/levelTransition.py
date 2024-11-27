@@ -62,6 +62,6 @@ class Transition:
                 )
                 textPos = (
                     surf.get_width() // 2 - timeText.get_width() // 2,
-                    surf.get_height() // 2 - timeText.get_height() // 2 - 100,
+                    surf.get_height() // 2 - timeText.get_height() // 2 - 50,
                 )
                 surf.blit(timeText, textPos)

@@ -87,18 +87,18 @@ def main():
                 pygame.mixer.music.set_volume(0.2 + menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0 + menu.soundChange)
-            if player.rect.colliderect(lManager.goalRect):
+            if lManager.checkNextLevel(player):
                 transition.start(timer.time)
                 lManager.nextLevel()
                 player.reset()
                 menu.reset = True
-            lManager.drawGoal(screen)
         else:
             if not menu.mute:
                 pygame.mixer.music.set_volume(0.5 + menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0)
 
+        lManager.drawGoal(screen)
         if menu.reset:
             player.reset()
             lManager.resetLevel()
@@ -129,7 +129,7 @@ def main():
 
         pygame.display.flip()
         clock.tick(Fps)
-        print(player.x,player.y)
+
     pygame.quit()
     sys.exit()
 

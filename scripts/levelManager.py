@@ -19,17 +19,17 @@ class LevelManager:
             1: {
                 "enemies": [Enemy((240, 520), (240, 360), 1, "right")],
                 "matrix": level1,
-                "goal": (750, 770, 320, 340),
+                "goal": (750-10, 320-10),
             },
             2: {
                 "enemies": [Enemy((440, 240), (440, 560), 1, "right")],
                 "matrix": level2,
-                "goal": (750, 770, 400, 420),
+                "goal": (750-10, 400-10),
             },
             3: {
                 "enemies": [Enemy((510, 400), (510, 760), 1, "right")],
                 "matrix": level3,
-                "goal": (450, 470, 200, 220),
+                "goal": (450-10, 200-10),
             },
             4: {
                 "enemies": [
@@ -37,21 +37,21 @@ class LevelManager:
                     Enemy((515, 400,), (515, 760,), 1, "right"),
                 ],
                 "matrix": level4,
-                "goal": (290, 310, 200, 220),
+                "goal": (290-10, 200-10),
             },
             5: {
                 "enemies": [
                     Enemy((240, 520), (240, 440), 1, "right"),
                 ],
                 "matrix": level5,
-                "goal": (530, 550, 240, 260),
+                "goal": (530-10, 240-10),
             },
             6: {
                 "enemies": [
                     Enemy((240, 520), (240, 640), 2, "right"),
                 ],
                 "matrix": level6,
-                "goal": (610, 630, 360, 380),
+                "goal": (610-10, 360-10),
             },
             7: {
                 "enemies": [
@@ -59,7 +59,7 @@ class LevelManager:
                     Enemy((480, 400), (480, 560), 1, "right"),
                 ],
                 "matrix": level7,
-                "goal": (760, 780, 400, 420),
+                "goal": (760-10, 400-10),
             },
         }
         self.currentLevel = 1
@@ -73,13 +73,11 @@ class LevelManager:
         self.grid = Grid(self.tilesX,self.tilesY,self.tileSize,self.matrix,screenWidth=self.screenX,screenHeight=self.tileSize)
         self.goal = (0,0,0,0)
         self.loadLevel(self.currentLevel)
-        minX, maxX, minY, maxY = self.goal
-        self.goalRect = pygame.Rect(minX, minY, maxX - minX, maxY - minY)
-
         self.sheet = SpriteSheet().split("assets/nextLevel/diamond.png",1,8,32,32)
         self.frame = 0
         self.animationTimer = 0
         self.goalImg = self.sheet[self.frame]
+        self.goalImg = pygame.transform.smoothscale_by(self.goalImg, (1.5,1.5))
 
     def resetLevel(self):
         self.loadLevel(self.currentLevel)
@@ -98,13 +96,20 @@ class LevelManager:
             self.currentLevel += 1
         else:
             self.resetLevel()
-        minX, maxX, minY, maxY = self.goal
-        self.goalRect = pygame.Rect(minX, minY, maxX - minX, maxY - minY)
 
     def drawGoal(self,surf):
         self.animationTimer = (self.animationTimer + 1) % 1000
         if self.animationTimer % 10 == 0:
             self.frame = (self.frame + 1) % 7
             self.goalImg = self.sheet[self.frame]
+            self.goalImg = pygame.transform.smoothscale_by(self.goalImg, (1.5,1.5))
 
-        surf.blit(self.goalImg,self.goalRect)
+        surf.blit(self.goalImg,self.levels[self.currentLevel]["goal"])
+    
+    def checkNextLevel(self,player):
+        playermask = pygame.mask.from_surface(player.img)
+        selfmask = pygame.mask.from_surface(self.goalImg)
+        if playermask.overlap(selfmask,(player.rect.x-self.goal[0],player.rect.y-self.goal[1])):
+            return True
+        else:
+            return False
