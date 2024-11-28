@@ -46,25 +46,22 @@ def main():
     screenShakeTimer = 0.5
     mainMenu = MainMenu(ScreenX, ScreenY)
 
+
     while mainMenu.active:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key in [pygame.K_UP, pygame.K_w]:
-                    mainMenu.navigate(-1)
-                elif event.key in [pygame.K_DOWN, pygame.K_s]:
-                    mainMenu.navigate(1)
-                elif event.key == pygame.K_RETURN:
-                    mainMenu.select()
+            elif event.type == pygame.KEYDOWN:
+                mainMenu.handleKeyboardInput(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
+                mainMenu.handleMouseClick(pygame.mouse.get_pos())
 
         mainMenu.render(screen)
         cursor.render(screen)
-        display.blit(screen,(0,0))
+        display.blit(screen, (0, 0))
         pygame.display.flip()
         clock.tick(Fps)
-
     while running:
         screen.fill(Black)
 
