@@ -18,17 +18,17 @@ class LevelManager:
             1: {
                 "enemies": [Enemy((240, 520), (240, 360), 1, "right")],
                 "matrix": level1,
-                "goal": (750-10, 320-10),
+                "goal": (750-15, 320-15),
             },
             2: {
                 "enemies": [Enemy((440, 240), (440, 560), 1, "right")],
                 "matrix": level2,
-                "goal": (750-10, 400-10),
+                "goal": (750-15, 400-15),
             },
             3: {
-                "enemies": [Enemy((510, 400), (510, 760), 1, "right")],
+                "enemies": [Enemy((560, 400), (560, 760), 1, "right")],
                 "matrix": level3,
-                "goal": (450-10, 200-10),
+                "goal": (450-15, 200-15),
             },
             4: {
                 "enemies": [
@@ -36,21 +36,21 @@ class LevelManager:
                     Enemy((515, 400,), (515, 760,), 1, "right"),
                 ],
                 "matrix": level4,
-                "goal": (290-10, 200-10),
+                "goal": (290-15, 200-15),
             },
             5: {
                 "enemies": [
                     Enemy((240, 520), (240, 440), 1, "right"),
                 ],
                 "matrix": level5,
-                "goal": (530-10, 240-10),
+                "goal": (530-15, 240-15),
             },
             6: {
                 "enemies": [
                     Enemy((240, 520), (240, 640), 2, "right"),
                 ],
                 "matrix": level6,
-                "goal": (610-10, 360-10),
+                "goal": (610-15, 360-15),
             },
             7: {
                 "enemies": [
@@ -58,7 +58,7 @@ class LevelManager:
                     Enemy((480, 400), (480, 560), 1, "right"),
                 ],
                 "matrix": level7,
-                "goal": (760-10, 400-10),
+                "goal": (760-15, 400-15),
             },
             8: {
                 "enemies": [
@@ -66,10 +66,11 @@ class LevelManager:
                     Enemy((315, 240), (315, 415), 1, "right"),
                 ],
                 "matrix": level8,
-                "goal": (200-10, 120-10),
+                "goal": (200-15, 120-15),
             },
         }
-        self.currentLevel = 1
+
+        self.currentLevel = 3
         self.tileSize = 40
         self.viewX, self.viewY = 20, 15
         self.tilesX, self.tilesY = 40, 40
