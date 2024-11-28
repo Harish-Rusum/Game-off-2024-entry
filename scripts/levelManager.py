@@ -26,13 +26,13 @@ class LevelManager:
                 "goal": (750-15, 400-15),
             },
             3: {
-                "enemies": [Enemy((560, 400), (560, 760), 1, "right")],
+                "enemies": [Enemy((560, 400), (560, 760), 2, "right")],
                 "matrix": level3,
                 "goal": (450-15, 200-15),
             },
             4: {
                 "enemies": [
-                    Enemy((240, 520,), (240, 480,), 1, "right"),
+                    Enemy((240, 520,), (240, 480,), 2, "right"),
                     Enemy((515, 400,), (515, 760,), 1, "right"),
                 ],
                 "matrix": level4,

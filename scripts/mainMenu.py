@@ -5,12 +5,15 @@ class MainMenu:
     def __init__(self, screenWidth, screenHeight):
         self.active = True
         self.options = ["Start Game", "Instructions", "Quit"]
-        self.selectedOption = 0  # Default to the first option
+        self.selectedOption = 0
         self.font = pygame.font.Font(None, 48)
         self.titleFont = pygame.font.Font(None, 72)
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
         self.optionRects = []
+        self.fadeAlpha = 255
+        self.fadeSpeed = 7
+        self.fadingOut = False
 
     def render(self, surf):
         surf.fill("#000000")
@@ -52,12 +55,26 @@ class MainMenu:
             y = 200 + index * 60
             surf.blit(text, (x, y))
 
+        fadeSurface = pygame.Surface((self.screenWidth, self.screenHeight))
+        fadeSurface.fill((0, 0, 0))
+
+        if self.fadingOut:
+            fadeSurface.set_alpha(self.fadeAlpha)
+            surf.blit(fadeSurface, (0, 0))
+            self.fadeAlpha += self.fadeSpeed
+            if self.fadeAlpha >= 255:
+                self.active = False
+        elif self.fadeAlpha > 0:
+            fadeSurface.set_alpha(self.fadeAlpha)
+            surf.blit(fadeSurface, (0, 0))
+            self.fadeAlpha -= self.fadeSpeed
+
     def navigate(self, direction):
         self.selectedOption = (self.selectedOption + direction) % len(self.options)
 
-    def handleMouseClick(self, mouse_pos):
+    def handleMouseClick(self, mousePos):
         for index, rect in enumerate(self.optionRects):
-            if rect.collidepoint(mouse_pos):
+            if rect.collidepoint(mousePos):
                 self.selectedOption = index
                 self.select()
 
@@ -71,8 +88,8 @@ class MainMenu:
 
     def select(self):
         if self.selectedOption == 0:
-            self.active = False
-        elif self.selectedOption == 1: 
+            self.fadingOut = True
+        elif self.selectedOption == 1:
             self.showInstructions(pygame.display.get_surface())
         elif self.selectedOption == 2:
             pygame.quit()

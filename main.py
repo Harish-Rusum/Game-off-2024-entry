@@ -54,7 +54,7 @@ def main():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 mainMenu.handleKeyboardInput(event)
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mainMenu.handleMouseClick(pygame.mouse.get_pos())
 
         mainMenu.render(screen)
@@ -62,6 +62,7 @@ def main():
         display.blit(screen, (0, 0))
         pygame.display.flip()
         clock.tick(Fps)
+
     while running:
         screen.fill(Black)
 
@@ -91,15 +92,6 @@ def main():
         if menu.exit:
             running = False
             
-        mouseX,mouseY = pygame.mouse.get_pos()
-        if pygame.mouse.get_pressed()[0]:
-            if mouseX > player.x:
-                right = 1
-            if mouseX < player.x:
-                right = -1
-            if mouseY < player.y:
-                jump = True
-
         if not menu.menuOpen and not transition.active:
             player.update(right, lManager.grid, screen, lManager.enemies, jump=jump)
             for enemy in lManager.enemies:
@@ -155,7 +147,7 @@ def main():
 
         pygame.display.flip()
         clock.tick(Fps)
-        # print(player.x,player.y)
+
     pygame.quit()
     sys.exit()
 
