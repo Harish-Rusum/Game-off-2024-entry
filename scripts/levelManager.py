@@ -11,6 +11,7 @@ from levels.level5 import matrix as level5
 from levels.level6 import matrix as level6
 from levels.level7 import matrix as level7
 from levels.level8 import matrix as level8
+from levels.level9 import matrix as level9
 
 class LevelManager:
     def __init__(self, screen):
@@ -68,9 +69,16 @@ class LevelManager:
                 "matrix": level8,
                 "goal": (200-15, 120-15),
             },
+            9: {
+                "enemies": [
+                    Enemy((400, 520), (400, 600), 1, "right"),
+                ],
+                "matrix": level9,
+                "goal": (760-15,400-15),
+            },
         }
 
-        self.currentLevel = 1
+        self.currentLevel = 9
         self.tileSize = 40
         self.viewX, self.viewY = 20, 15
         self.tilesX, self.tilesY = 40, 40

@@ -164,7 +164,6 @@ def main():
         cursor.render(screen)
         display.blit(screen, renderOffset)
 
-
         pygame.display.flip()
         clock.tick(Fps)
 
