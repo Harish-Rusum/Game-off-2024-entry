@@ -16,7 +16,7 @@ class MainMenu:
         self.fadingOut = False
 
     def render(self, surf):
-        surf.fill("#000000")
+        # surf.fill("#000000")
         titleText = self.titleFont.render("Untitled Game", True, "#FFFFFF")
         surf.blit(titleText, (self.screenWidth // 2 - titleText.get_width() // 2, 50))
 
@@ -56,7 +56,7 @@ class MainMenu:
             surf.blit(text, (x, y))
 
         fadeSurface = pygame.Surface((self.screenWidth, self.screenHeight))
-        fadeSurface.fill((0, 0, 0))
+        # fadeSurface.fill((0, 0, 0))
 
         if self.fadingOut:
             fadeSurface.set_alpha(self.fadeAlpha)

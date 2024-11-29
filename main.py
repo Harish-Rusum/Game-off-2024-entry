@@ -36,6 +36,9 @@ pygame.mixer.music.load("assets/Music/bgm.mp3")
 pygame.mixer.music.play(loops=-1)
 pygame.mixer.music.set_volume(0.2)
 
+bg = pygame.image.load("assets/Backgrounds/bg.png").convert_alpha()
+bg = pygame.transform.scale_by(bg, (0.812,0.82))
+
 def main():
     running = True
     pauseMenu = False
@@ -46,7 +49,6 @@ def main():
     screenShakeTimer = 0.5
     mainMenu = MainMenu(ScreenX, ScreenY)
 
-
     while mainMenu.active:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -56,7 +58,7 @@ def main():
                 mainMenu.handleKeyboardInput(event)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mainMenu.handleMouseClick(pygame.mouse.get_pos())
-
+        screen.blit(bg, (0,0))
         mainMenu.render(screen)
         cursor.render(screen)
         display.blit(screen, (0, 0))
@@ -127,7 +129,7 @@ def main():
 
         if menu.prevLevel:
             if lManager.currentLevel > 1:
-                lManager.previousLevel()
+                lManager.prevLevel()
                 player.reset()
                 menu.prevLevel = False
                 menu.menuOpen = False
