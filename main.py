@@ -22,7 +22,7 @@ Fps = 60
 Black = "#000000"
 
 display = pygame.display.set_mode((ScreenX, ScreenY))
-screen = pygame.surface.Surface((ScreenX,ScreenY))
+screen = pygame.surface.Surface((ScreenX, ScreenY))
 pygame.display.set_caption("Tile Grid System")
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
@@ -38,7 +38,7 @@ pygame.mixer.music.play(loops=-1)
 pygame.mixer.music.set_volume(0.2)
 
 bg = pygame.image.load("assets/Backgrounds/bg.png").convert_alpha()
-bg = pygame.transform.scale_by(bg, (0.812,0.82))
+bg = pygame.transform.scale_by(bg, (0.812, 0.82))
 
 async def main():
     running = True
@@ -50,6 +50,8 @@ async def main():
     screenShakeTimer = 0.5
     mainMenu = MainMenu(ScreenX, ScreenY)
 
+    previous_time = pygame.time.get_ticks() / 1000
+
     while mainMenu.active:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -59,7 +61,7 @@ async def main():
                 mainMenu.handleKeyboardInput(event)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mainMenu.handleMouseClick(pygame.mouse.get_pos())
-        screen.blit(bg, (0,0))
+        screen.blit(bg, (0, 0))
         mainMenu.render(screen)
         cursor.render(screen)
         display.blit(screen, (0, 0))
@@ -67,6 +69,10 @@ async def main():
         clock.tick(Fps)
 
     while running:
+        current_time = pygame.time.get_ticks() / 1000
+        deltaTime = current_time - previous_time
+        previous_time = current_time
+
         screen.fill(Black)
 
         for event in pygame.event.get():
@@ -94,13 +100,16 @@ async def main():
 
         if menu.exit:
             running = False
-            
+        t = True 
         if not menu.menuOpen and not transition.active:
-            player.update(right, lManager.grid, screen, lManager.enemies, jump=jump)
+            player.update(right, lManager.grid, screen, lManager.enemies, deltaTime, jump=jump)
             for enemy in lManager.enemies:
                 if enemy.deadTime < 0.5 and enemy.deadTime != 0:
                     screenShake = True
-                enemy.update(screen)
+                    t = False
+                enemy.update(screen, deltaTime)
+            if t:
+                screenShake = False
 
             timer.tick(screen)
 
@@ -151,11 +160,10 @@ async def main():
         transition.render(screen)
         menu.render()
 
-
         if screenShake:
             renderOffset[0] = random.randint(0, 8) - 4
             renderOffset[1] = random.randint(0, 8) - 4
-            screenShakeTimer -= 0.5
+            screenShakeTimer -= deltaTime
 
         if screenShakeTimer <= 0:
             screenShake = False
@@ -167,6 +175,7 @@ async def main():
 
         pygame.display.flip()
         clock.tick(Fps)
+
     await asyncio.sleep(0)
 
 if __name__ == "__main__":

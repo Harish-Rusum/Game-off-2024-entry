@@ -32,11 +32,11 @@ class Enemy:
         self.frames = self.characters[self.enemyType]
         self.state = 0
         self.rect = self.frames[self.state].get_rect()
-        self.rect.x = self.x-10
-        self.rect.y = self.y-10
+        self.rect.x = self.x - 10
+        self.rect.y = self.y - 10
         self.rightMax = self.moveRange[1]
         self.leftMax = self.moveRange[0]
-        self.maxVel = 2
+        self.maxVel = 130
         self.dead = False
         self.deadTime = 0.5
         self.animationTimer = 0
@@ -51,8 +51,8 @@ class Enemy:
         img = self.flip(self.direction)
         surf.blit(img, (self.rect.x + offset[0], self.rect.y + offset[1]))
 
-    def move(self):
-        step = self.maxVel
+    def move(self, deltaTime):
+        step = self.maxVel * deltaTime
         if self.direction == "right":
             self.x += step
             if self.x >= self.rightMax:
@@ -64,8 +64,9 @@ class Enemy:
                 self.x = self.leftMax
                 self.direction = "right"
 
-        if self.animationTimer % 8 == 0:
+        if self.animationTimer >= 0.1:
             self.state = (self.state + 1) % len(self.frames)
+            self.animationTimer = 0
 
         self.rect.x = round(self.x) - 10
         self.rect.y = self.y - 10
@@ -74,11 +75,13 @@ class Enemy:
         self.dead = True
         self.state = 2
 
-    def update(self, surf):
+    def update(self, surf, deltaTime):
         if not self.dead:
-            self.move()
+            self.move(deltaTime)
         else:
-            self.deadTime = max(0, self.deadTime - (1 / 60))
+            self.deadTime = max(0, self.deadTime - deltaTime)
+
         if self.deadTime > 0:
             self.render(surf)
-        self.animationTimer = (self.animationTimer + 1) % 1000
+
+        self.animationTimer += deltaTime

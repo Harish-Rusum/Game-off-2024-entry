@@ -20,8 +20,6 @@ class Player:
         self.animationFrames = 4
         self.direction = 0
         self.counter = 0
-        self.playerX = self.playerX
-        self.playerY = self.playerY
         self.img = self.sheet[self.frame]
         self.img = pygame.transform.smoothscale(self.img, (self.playerX, self.playerY))
         self.rect = self.img.get_rect()
@@ -51,15 +49,15 @@ class Player:
         self.state = "grounded"
         self.yVel = 0
 
-    def render(self, surf,offset=[0,0]):
+    def render(self, surf, offset=[0, 0]):
         img = self.sheet[self.frame]
         img = pygame.transform.smoothscale(img, (self.playerX, self.playerY))
         if self.direction == -1:
             img = pygame.transform.rotate(img, -180)
             img = pygame.transform.flip(img, False, True)
-        surf.blit(img, (self.x+offset[0], self.y+offset[1]))
+        surf.blit(img, (self.x + offset[0], self.y + offset[1]))
 
-    def gravity(self, grid, enemies):
+    def gravity(self, grid, enemies, deltaTime):
         self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
         self.rect.y += self.yVel
 
@@ -84,7 +82,7 @@ class Player:
             self.coyoteTimer = 0
         else:
             if self.state == "grounded":
-                self.coyoteTimer += 1 / 60
+                self.coyoteTimer += deltaTime
             if self.coyoteTimer > self.coyoteTime:
                 self.state = "airborne"
 
@@ -158,10 +156,10 @@ class Player:
         self.x = self.rect.x
         self.x = max(0, min(self.x, screen.get_width() - self.playerX))
 
-    def update(self, dx, grid, screen, enemies, jump=False):
+    def update(self, dx, grid, screen, enemies, delta_time, jump=False):
         self.render(screen)
         self.moveX(dx, grid, screen)
-        self.gravity(grid, enemies)
+        self.gravity(grid, enemies, delta_time)
         if jump:
             if not self.jumpHeld:
                 self.jumpHeld = True
