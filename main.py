@@ -116,6 +116,24 @@ def main():
             else:
                 pygame.mixer.music.set_volume(0.0)
 
+        if menu.nextLevel:
+            if lManager.currentLevel != len(list(lManager.levels.keys())):
+                lManager.nextLevel()
+                player.reset()
+                menu.nextLevel = False
+                menu.menuOpen = False
+                timer.reset()
+                menu.holdingNext = False
+
+        if menu.prevLevel:
+            if lManager.currentLevel > 1:
+                lManager.previousLevel()
+                player.reset()
+                menu.prevLevel = False
+                menu.menuOpen = False
+                timer.reset()
+                menu.holdingPrev = False
+
         lManager.drawGoal(screen)
         if menu.reset:
             player.reset()

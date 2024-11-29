@@ -70,7 +70,7 @@ class LevelManager:
             },
         }
 
-        self.currentLevel = 3
+        self.currentLevel = 1
         self.tileSize = 40
         self.viewX, self.viewY = 20, 15
         self.tilesX, self.tilesY = 40, 40
@@ -121,3 +121,8 @@ class LevelManager:
             return True
         else:
             return False
+
+    def previousLevel(self):
+        if self.currentLevel > 1:
+            self.loadLevel(self.currentLevel - 1)
+            self.currentLevel -= 1
