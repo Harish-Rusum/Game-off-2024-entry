@@ -17,7 +17,7 @@ class MainMenu:
 
     def render(self, surf):
         # surf.fill("#000000")
-        titleText = self.titleFont.render("Untitled Game", True, "#FFFFFF")
+        titleText = self.titleFont.render("Darkness rules", True, "#FFFFFF")
         surf.blit(titleText, (self.screenWidth // 2 - titleText.get_width() // 2, 50))
 
         mousePos = pygame.mouse.get_pos()

@@ -122,7 +122,7 @@ class LevelManager:
         else:
             return False
 
-    def previousLevel(self):
+    def prevLevel(self):
         if self.currentLevel > 1:
             self.loadLevel(self.currentLevel - 1)
             self.currentLevel -= 1
