@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+import asyncio
 
 from scripts.mainMenu import MainMenu
 from scripts.levelManager import LevelManager
@@ -39,7 +40,7 @@ pygame.mixer.music.set_volume(0.2)
 bg = pygame.image.load("assets/Backgrounds/bg.png").convert_alpha()
 bg = pygame.transform.scale_by(bg, (0.812,0.82))
 
-def main():
+async def main():
     running = True
     pauseMenu = False
     holdingEsc = False
@@ -166,9 +167,7 @@ def main():
 
         pygame.display.flip()
         clock.tick(Fps)
-
-    pygame.quit()
-    sys.exit()
+    await asyncio.sleep(0)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
