@@ -16,8 +16,7 @@ class MainMenu:
         self.fadingOut = False
 
     def render(self, surf):
-        # surf.fill("#000000")
-        titleText = self.titleFont.render("Darkness rules", True, "#FFFFFF")
+        titleText = self.titleFont.render("A dark escape", True, "#FFFFFF")
         surf.blit(titleText, (self.screenWidth // 2 - titleText.get_width() // 2, 50))
 
         mousePos = pygame.mouse.get_pos()
@@ -26,7 +25,7 @@ class MainMenu:
         for index, option in enumerate(self.options):
             optionRect = pygame.Rect(
                 self.screenWidth // 2 - 150,
-                200 + index * 60 - 10,
+                200 + index * 60 - 2,
                 300,
                 50,
             )

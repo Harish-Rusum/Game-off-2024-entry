@@ -3,7 +3,7 @@ import pygame
 class Timer:
     def __init__(self, screenwidth, screenheight):
         self.time = 0
-        self.font = pygame.font.Font("assets/Fonts/font.ttf", 50)
+        self.font = pygame.font.Font("assets/Fonts/font.otf", 50)
         
         self.y = 50
         self.x = screenwidth
