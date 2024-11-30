@@ -23,7 +23,7 @@ Black = "#000000"
 
 display = pygame.display.set_mode((ScreenX, ScreenY))
 screen = pygame.surface.Surface((ScreenX, ScreenY))
-pygame.display.set_caption("Tile Grid System")
+pygame.display.set_caption("A dark escape")
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 
@@ -43,6 +43,10 @@ bg = pygame.transform.scale_by(bg, (0.812, 0.82))
 playerDeath = pygame.mixer.Sound('assets/Music/playerDeath.mp3')
 playerDeath.set_volume(0.2)
 channel1 = pygame.mixer.Channel(2)
+
+nextLevel = pygame.mixer.Sound('assets/Music/nextLevel.mp3')
+nextLevel.set_volume(0.5)
+channel2 = pygame.mixer.Channel(3)
 
 async def main():
     running = True
@@ -124,6 +128,7 @@ async def main():
             if lManager.checkNextLevel(player):
                 transition.start(timer.time)
                 lManager.nextLevel()
+                channel2.play(nextLevel)
                 player.reset()
                 menu.reset = True
 
@@ -141,6 +146,7 @@ async def main():
         if menu.nextLevel:
             if lManager.currentLevel != len(list(lManager.levels.keys())):
                 lManager.nextLevel()
+                # channel2.play(nextLevel)
                 player.reset()
                 menu.nextLevel = False
                 menu.menuOpen = False

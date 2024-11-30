@@ -103,6 +103,13 @@ class MainMenu:
             "    - Avoid enemies and reach the goal!",
             "    - You can jump on enemies to kill them.",
             "    - (All enemies except spiked enemies)",
+            "",
+            "    - VERY important : Use the pause menu to :",
+            "          - Next level",
+            "          - Previous level",
+            "          - Retry level",
+            "          - All music related settings",
+            "",
             "Press Enter to return..."
         ]
 
@@ -118,5 +125,5 @@ class MainMenu:
             surf.fill("#000000")
             for i, line in enumerate(instructions):
                 text = self.font.render(line, True, "#FFFFFF")
-                surf.blit(text, (50, 100 + i * 40))
+                surf.blit(text, (50, 100 + i * 30))
             pygame.display.flip()
