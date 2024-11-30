@@ -40,6 +40,10 @@ pygame.mixer.music.set_volume(0.2)
 bg = pygame.image.load("assets/Backgrounds/bg.png").convert_alpha()
 bg = pygame.transform.scale_by(bg, (0.812, 0.82))
 
+playerDeath = pygame.mixer.Sound('assets/Music/playerDeath.mp3')
+playerDeath.set_volume(0.2)
+channel1 = pygame.mixer.Channel(2)
+
 async def main():
     running = True
     pauseMenu = False
@@ -122,11 +126,17 @@ async def main():
                 lManager.nextLevel()
                 player.reset()
                 menu.reset = True
+
+            if player.dead:
+                if not channel1.get_busy():
+                    channel1.play(playerDeath)
         else:
             if not menu.mute:
                 pygame.mixer.music.set_volume(0.5 + menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0)
+            for enemy in lManager.enemies:
+                enemy.render(screen, [0,0])
 
         if menu.nextLevel:
             if lManager.currentLevel != len(list(lManager.levels.keys())):

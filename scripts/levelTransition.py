@@ -13,7 +13,7 @@ class Transition:
         self.surface = None
         self.done = False
         # self.font = pygame.font.Font("assets/Fonts/font.ttf", 70)
-        self.font = pygame.font.Font(None, 70)
+        self.font = pygame.font.Font("assets/Fonts/font.otf", 70)
         self.counter = 0
         self.showText = True
 

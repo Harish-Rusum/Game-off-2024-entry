@@ -40,6 +40,8 @@ class Player:
         self.coyoteTimer = 0
         self.groundedBuffer = False
         self.extraJumpStrength = 1.5
+        self.deadTime = 0.1
+        self.dead = False
 
     def respawn(self):
         self.x = self.spawnX
@@ -100,11 +102,17 @@ class Player:
                             self.yVel = self.jumpStrength - self.extraJumpStrength
                         else:
                             self.respawn()
+                            self.dead = True
                             return
                     else:
                         self.respawn()
+                        self.dead = True
                         return
-
+        if self.deadTime == 0:
+            self.dead = False
+            self.deadTime = 0.1
+        if self.dead:
+            self.deadTime = max(self.deadTime - (1/60),0)
         self.y = self.rect.y
 
     def jump(self):

@@ -6,8 +6,8 @@ class MainMenu:
         self.active = True
         self.options = ["Start Game", "Instructions", "Quit"]
         self.selectedOption = 0
-        self.font = pygame.font.Font(None, 48)
-        self.titleFont = pygame.font.Font(None, 72)
+        self.font = pygame.font.Font("assets/Fonts/font.otf", 48)
+        self.titleFont = pygame.font.Font("assets/Fonts/font.otf", 72)
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
         self.optionRects = []
