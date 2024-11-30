@@ -32,7 +32,7 @@ class Player:
         self.yVel = 0
         self.gravityAcc = 0.6
         self.terminalVel = 8
-        self.jumpStrength = -10
+        self.jumpStrength = -11
         self.maxJumps = 1
         self.jumpsRemaining = self.maxJumps
         self.jumpHeld = False
