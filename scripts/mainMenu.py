@@ -6,7 +6,7 @@ class MainMenu:
         self.active = True
         self.options = ["Start Game", "Instructions", "Quit"]
         self.selectedOption = 0
-        self.font = pygame.font.Font("assets/Fonts/font.otf", 48)
+        self.font = pygame.font.Font("assets/Fonts/font.otf", 35)
         self.titleFont = pygame.font.Font("assets/Fonts/font.otf", 72)
         self.screenWidth = screenWidth
         self.screenHeight = screenHeight
@@ -25,7 +25,7 @@ class MainMenu:
         for index, option in enumerate(self.options):
             optionRect = pygame.Rect(
                 self.screenWidth // 2 - 150,
-                200 + index * 60 - 2,
+                200 + index * 60 - 7,
                 300,
                 50,
             )
