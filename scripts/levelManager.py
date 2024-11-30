@@ -64,7 +64,7 @@ class LevelManager:
             8: {
                 "enemies": [
                     Enemy((200, 520), (200, 480), 3, "right"),
-                    Enemy((315, 240), (315, 415), 1, "right"),
+                    Enemy((315, 240), (315, 495), 1, "right"),
                 ],
                 "matrix": level8,
                 "goal": (200-15, 120-15),
