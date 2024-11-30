@@ -27,7 +27,7 @@ class Player:
         self.rect.y = self.y
         self.acc = 0.5
         self.decc = 0.3
-        self.maxspeed = 4
+        self.maxspeed = 4.5
         self.xVel = 0
         self.yVel = 0
         self.gravityAcc = 0.6
