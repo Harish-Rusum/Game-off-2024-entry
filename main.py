@@ -21,8 +21,8 @@ ScreenX, ScreenY = TileSize * ViewX, TileSize * ViewY
 Fps = 60
 Black = "#000000"
 
-display = pygame.display.set_mode((ScreenX, ScreenY))
-screen = pygame.surface.Surface((ScreenX, ScreenY))
+display = pygame.display.set_mode((ScreenX, ScreenY),pygame.SRCALPHA)
+screen = pygame.surface.Surface((ScreenX, ScreenY),pygame.SRCALPHA)
 pygame.display.set_caption("A dark escape")
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
@@ -69,7 +69,8 @@ async def main():
                 mainMenu.handleKeyboardInput(event)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mainMenu.handleMouseClick(pygame.mouse.get_pos())
-        screen.blit(bg, (0, 0))
+
+        screen.blit(bg, (0,0))
         mainMenu.render(screen)
         cursor.render(screen)
         display.blit(screen, (0, 0))

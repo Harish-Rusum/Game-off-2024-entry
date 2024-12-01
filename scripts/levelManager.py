@@ -27,7 +27,7 @@ class LevelManager:
                 "goal": (750-15, 400-15),
             },
             3: {
-                "enemies": [Enemy((560, 400), (560, 760), 2, "right")],
+                "enemies": [Enemy((560, 400), (560, 760), 1, "right")],
                 "matrix": level3,
                 "goal": (450-15, 200-15),
             },
@@ -111,6 +111,7 @@ class LevelManager:
             self.loadLevel(self.currentLevel + 1)
             self.currentLevel += 1
         else:
+            self.currentLevel = 1
             self.resetLevel()
 
     def drawGoal(self,surf):
