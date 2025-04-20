@@ -71,30 +71,30 @@ class MainMenu:
     def navigate(self, direction):
         self.selectedOption = (self.selectedOption + direction) % len(self.options)
 
-    def handleMouseClick(self, mousePos):
+    def handleMouseClick(self, mousePos,cursor):
         for index, rect in enumerate(self.optionRects):
             if rect.collidepoint(mousePos):
                 self.selectedOption = index
-                self.select()
+                self.select(cursor)
 
-    def handleKeyboardInput(self, event):
+    def handleKeyboardInput(self, event,cursor):
         if event.key in [pygame.K_UP, pygame.K_w]:
             self.navigate(-1)
         elif event.key in [pygame.K_DOWN, pygame.K_s]:
             self.navigate(1)
         elif event.key == pygame.K_RETURN:
-            self.select()
+            self.select(cursor)
 
-    def select(self):
+    def select(self,cursor):
         if self.selectedOption == 0:
             self.fadingOut = True
         elif self.selectedOption == 1:
-            self.showInstructions(pygame.display.get_surface())
+            self.showInstructions(pygame.display.get_surface(),cursor)
         elif self.selectedOption == 2:
             pygame.quit()
             sys.exit()
 
-    def showInstructions(self, surf):
+    def showInstructions(self, surf,cursor):
         instructionScreen = True
         instructions = [
             "Instructions:",
@@ -105,12 +105,12 @@ class MainMenu:
             "    - (All enemies except spiked enemies)",
             "",
             "    - VERY important : Use the pause menu to :",
-            "          - Next level",
-            "          - Previous level",
+            "          - Go to next level",
+            "          - Go to previous level",
             "          - Retry level",
-            "          - All music related settings",
+            "          - Adjust all music related settings",
             "",
-            "Press Enter to return..."
+            "Press Enter to go back..."
         ]
 
         while instructionScreen:
@@ -126,4 +126,5 @@ class MainMenu:
             for i, line in enumerate(instructions):
                 text = self.font.render(line, True, "#FFFFFF")
                 surf.blit(text, (50, 100 + i * 30))
+            cursor.render(surf)
             pygame.display.flip()

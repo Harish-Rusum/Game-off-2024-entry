@@ -66,9 +66,9 @@ async def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                mainMenu.handleKeyboardInput(event)
+                mainMenu.handleKeyboardInput(event,cursor)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mainMenu.handleMouseClick(pygame.mouse.get_pos())
+                mainMenu.handleMouseClick(pygame.mouse.get_pos(),cursor)
 
         screen.blit(bg, (0,0))
         mainMenu.render(screen)
@@ -76,6 +76,9 @@ async def main():
         display.blit(screen, (0, 0))
         pygame.display.flip()
         clock.tick(Fps)
+
+
+    cursor.render(screen)
 
     while running:
         current_time = pygame.time.get_ticks() / 1000
