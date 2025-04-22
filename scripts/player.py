@@ -25,9 +25,9 @@ class Player:
         self.rect = self.img.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-        self.acc = 0.5
-        self.decc = 0.3
-        self.maxspeed = 4.5
+        self.acc = 0.8
+        self.decc = 0.5
+        self.maxspeed = 5
         self.xVel = 0
         self.yVel = 0
         self.gravityAcc = 0.6
@@ -61,7 +61,7 @@ class Player:
 
     def gravity(self, grid, enemies, deltaTime):
         self.yVel = min(self.yVel + self.gravityAcc, self.terminalVel)
-        self.rect.y += self.yVel
+        self.rect.y += int(self.yVel)
 
         surroundingTiles = grid.getSurroundingTiles(self.x, self.y)
         isGrounded = False
@@ -148,7 +148,7 @@ class Player:
         self.counter += 1
 
         newX = self.x + self.xVel
-        self.rect.x = newX
+        self.rect.x = int(newX)
         surrounding = grid.getSurroundingTiles(self.x, self.y)
 
         for element in surrounding:

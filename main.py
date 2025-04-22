@@ -30,7 +30,7 @@ pygame.mouse.set_visible(False)
 lManager = LevelManager(screen)
 player = Player(TileSize, TileSize, 1, 0, 400)
 cursor = Cursor()
-fov = Overlay(ScreenX, ScreenY, 200, [ScreenX // 2, ScreenY // 2])
+fov = Overlay(ScreenX, ScreenY, 300, [ScreenX // 2, ScreenY // 2])
 timer = Timer(ScreenX, ScreenY)
 transition = Transition()
 pygame.mixer.music.load("assets/Music/bgm.mp3")
@@ -100,6 +100,10 @@ async def main():
         elif keys[pygame.K_d] or keys[pygame.K_l] or keys[pygame.K_RIGHT]:
             right = 1
 
+        if keys[pygame.K_r]:
+            player.reset()
+            menu.reset = True
+
         if keys[pygame.K_ESCAPE]:
             if not holdingEsc:
                 holdingEsc = True
@@ -132,6 +136,7 @@ async def main():
             if lManager.checkNextLevel(player):
                 transition.start(timer.time)
                 lManager.nextLevel()
+                fov.decrease()
                 channel2.play(nextLevel)
                 player.reset()
                 menu.reset = True
@@ -150,6 +155,7 @@ async def main():
         if menu.nextLevel:
             if lManager.currentLevel != len(list(lManager.levels.keys())):
                 lManager.nextLevel()
+                fov.decrease()
                 # channel2.play(nextLevel)
                 player.reset()
                 menu.nextLevel = False

@@ -20,3 +20,7 @@ class Overlay:
         
         screen.blit(overlay, (0, 0))
         return overlay
+
+    def decrease(self):
+        self.FovRad -= 10
+
