@@ -127,7 +127,8 @@ async def main():
             if t:
                 screenShake = False
 
-            timer.tick(screen)
+            if player.moved:
+                timer.tick(screen)
 
             if not menu.mute:
                 pygame.mixer.music.set_volume(0.2 + menu.soundChange)

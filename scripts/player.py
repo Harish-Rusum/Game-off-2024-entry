@@ -13,6 +13,7 @@ class Player:
     def reset(self):
         self.x = self.spawnX
         self.y = self.spawnY
+        self.moved = False
         self.state = "grounded"
         self.spriteSheet = SpriteSheet()
         self.sheet = self.spriteSheet.split(f"assets/Characters/character{self.charNum}.png", 1, 4, 24, 24)
@@ -164,7 +165,12 @@ class Player:
         self.x = self.rect.x
         self.x = max(0, min(self.x, screen.get_width() - self.playerX))
 
+    def updateMove(self, dx, jump):
+        if ((dx != 0) or (jump == True)):
+            self.moved = True
+
     def update(self, dx, grid, screen, enemies, delta_time, jump=False):
+        self.updateMove(dx, jump)
         self.render(screen)
         self.moveX(dx, grid, screen)
         self.gravity(grid, enemies, delta_time)
