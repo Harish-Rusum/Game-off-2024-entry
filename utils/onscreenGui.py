@@ -1,23 +1,23 @@
 import pygame
 
 class OnscreenGui:
-    def __init__(self, screenwidth, screenheight):
+    def __init__(self, screenWidth, screenHeight):
         self.time = 0
         self.font = pygame.font.Font("assets/Fonts/font.otf", 50)
         self.helpFont = pygame.font.Font("assets/Fonts/font.otf", 24)
         
-        timer_placeholder = "00:00"
-        help_text = "r -> restart"
+        timerPlaceholder = "00:00"
+        helpText = "r -> restart"
 
-        self.textWidth, self.textHeight = self.font.size(timer_placeholder)
-        self.helpTextWidth, self.helpTextHeight = self.helpFont.size(help_text)
+        self.textWidth, self.textHeight = self.font.size(timerPlaceholder)
+        self.helpTextWidth, self.helpTextHeight = self.helpFont.size(helpText)
 
-        self.x = screenwidth - self.textWidth - 50
+        self.x = screenWidth - self.textWidth - 50
         self.y = 50 - self.textHeight // 2
 
         self.helpTextX = self.x + (self.textWidth - self.helpTextWidth) // 2
         self.helpTextY = self.y + self.textHeight + 5
-        self.helpText = help_text
+        self.helpText = helpText
 
     def reset(self):
         self.time = 0

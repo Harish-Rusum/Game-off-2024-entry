@@ -2,6 +2,7 @@ import pygame
 class Menu:
     def __init__(self, surf):
         self.menuOpen = False
+        self.font = pygame.font.Font("assets/Fonts/font.otf", 25)
         self.surf = surf
         self.overlay = pygame.Surface(surf.get_size(), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 200))
@@ -77,14 +78,14 @@ class Menu:
 
         if keys[pygame.K_UP]:
             if self.upHeld == False:
-                self.selected = (self.selected - 1) % (len(self.buttons)-1)
+                self.selected = (self.selected - 1) % (len(self.buttons) - 1)
                 self.upHeld = True
         else:
             self.upHeld = False
 
         if keys[pygame.K_DOWN]:
             if self.downHeld == False:
-                self.selected = (self.selected + 1) % (len(self.buttons)-1)
+                self.selected = (self.selected + 1) % (len(self.buttons) - 1)
                 self.downHeld = True
         else:
             self.downHeld = False
@@ -107,10 +108,12 @@ class Menu:
             self.overlay.fill((0, 0, 0, 200))
 
             activeButtons = self.buttonStates[self.mute]
+            labels = ["Back", "Quit", "Mute", "Volume up", "Volume down", "Restart", "Prev Level", "Next Level"]
+
             for i, button in enumerate(activeButtons):
                 buttonX, buttonY = 20, (i * 50 + 20)
-                buttonRect = pygame.Rect(buttonX, buttonY, button.get_width(), button.get_height())
 
+                buttonRect = pygame.Rect(buttonX, buttonY, button.get_width(), button.get_height())
                 if buttonRect.collidepoint(mouseX, mouseY):
                     self.selected = i
                     if pygame.mouse.get_pressed()[0]:
@@ -119,8 +122,14 @@ class Menu:
                     self.outline(button, (buttonX, buttonY), color=(100, 100, 100))
 
                 self.overlay.blit(button, (buttonX, buttonY))
-            if self.selected != None:
-                self.outline(self.buttonStates[self.mute][self.selected],(20,self.selected*50+20))
+
+                labelText = labels[i] if i < len(labels) else "button"
+                label = self.font.render(labelText, True, (104, 104, 104))
+                label.set_colorkey((0, 0, 0))
+                self.overlay.blit(label, (buttonX + 15, buttonY))
+
+            if self.selected is not None:
+                self.outline(self.buttonStates[self.mute][self.selected], (20, self.selected * 50 + 20))
 
             if not pygame.mouse.get_pressed()[0]:
                 self.muteHeld = self.volUpHeld = self.volDownHeld = False
