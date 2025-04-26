@@ -23,7 +23,7 @@ Black = "#000000"
 
 display = pygame.display.set_mode((ScreenX, ScreenY),pygame.SRCALPHA)
 screen = pygame.surface.Surface((ScreenX, ScreenY),pygame.SRCALPHA)
-pygame.display.set_caption("A dark escape")
+pygame.display.set_caption("Shadow")
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 

@@ -38,7 +38,7 @@ class MainMenu:
         surf.fill((0, 0, 0))
         self.overlay.fill((0, 0, 0, 0))
 
-        titleText = self.titleFont.render("A dark escape", True, "#FFFFFF")
+        titleText = self.titleFont.render("Shadow", True, "#FFFFFF")
         surf.blit(titleText, (self.screenWidth // 2 - titleText.get_width() // 2, 50))
 
         mousePos = pygame.mouse.get_pos()
