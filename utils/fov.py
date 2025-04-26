@@ -6,6 +6,7 @@ class Overlay:
         self.ScreenY = screenY
         self.ScreenSize = (screenX, screenY)
         self.FovRad = rad
+        self.originalRad = rad
         self.Center = center
 
 
@@ -22,5 +23,7 @@ class Overlay:
         return overlay
 
     def decrease(self):
-        self.FovRad -= 10
+        self.FovRad -= 5
 
+    def reset(self):
+        self.FovRad = self.originalRad

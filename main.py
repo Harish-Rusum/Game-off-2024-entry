@@ -10,7 +10,7 @@ from scripts.player import Player
 from scripts.cursor import Cursor
 from utils.fov import Overlay
 from utils.menu import Menu
-from utils.timer import Timer
+from utils.onscreenGui import OnscreenGui
 
 pygame.init()
 pygame.mixer.init()
@@ -31,7 +31,7 @@ lManager = LevelManager(screen)
 player = Player(TileSize, TileSize, 1, 0, 400)
 cursor = Cursor()
 fov = Overlay(ScreenX, ScreenY, 300, [ScreenX // 2, ScreenY // 2])
-timer = Timer(ScreenX, ScreenY)
+timer = OnscreenGui(ScreenX, ScreenY)
 transition = Transition()
 pygame.mixer.music.load("assets/Music/bgm.mp3")
 pygame.mixer.music.play(loops=-1)
