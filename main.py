@@ -1,7 +1,7 @@
+
 import pygame
 import random
 import sys
-import asyncio
 
 from scripts.mainMenu import MainMenu
 from scripts.levelManager import LevelManager
@@ -21,8 +21,8 @@ ScreenX, ScreenY = TileSize * ViewX, TileSize * ViewY
 Fps = 60
 Black = "#000000"
 
-display = pygame.display.set_mode((ScreenX, ScreenY),pygame.SRCALPHA)
-screen = pygame.surface.Surface((ScreenX, ScreenY),pygame.SRCALPHA)
+display = pygame.display.set_mode((ScreenX, ScreenY), pygame.SRCALPHA)
+screen = pygame.surface.Surface((ScreenX, ScreenY), pygame.SRCALPHA)
 pygame.display.set_caption("Shadow")
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(False)
@@ -48,7 +48,27 @@ nextLevel = pygame.mixer.Sound('assets/Music/nextLevel.mp3')
 nextLevel.set_volume(0.5)
 channel2 = pygame.mixer.Channel(3)
 
-async def main():
+def runMainMenu(mainMenu, cursor):
+    mainMenu.active = True
+    while mainMenu.active:
+        screen.blit(bg, (0, 0))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                mainMenu.handleKeyboardInput(event, cursor)
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mainMenu.handleMouseClick(pygame.mouse.get_pos(), cursor)
+
+        mainMenu.render(screen)
+        cursor.render(screen)
+        display.blit(screen, (0, 0))
+        pygame.display.flip()
+        clock.tick(Fps)
+
+def main():
     running = True
     pauseMenu = False
     holdingEsc = False
@@ -60,25 +80,8 @@ async def main():
 
     previous_time = pygame.time.get_ticks() / 1000
 
-    while mainMenu.active:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                mainMenu.handleKeyboardInput(event,cursor)
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mainMenu.handleMouseClick(pygame.mouse.get_pos(),cursor)
-
-        screen.blit(bg, (0,0))
-        mainMenu.render(screen)
-        cursor.render(screen)
-        display.blit(screen, (0, 0))
-        pygame.display.flip()
-        clock.tick(Fps)
-
-
-    cursor.render(screen)
+    # Run the main menu first
+    runMainMenu(mainMenu, cursor)
 
     while running:
         current_time = pygame.time.get_ticks() / 1000
@@ -110,13 +113,14 @@ async def main():
                 pauseMenu = not pauseMenu
         else:
             holdingEsc = False
-            
+
         lManager.grid.render(screen)
         player.render(screen)
 
         if menu.exit:
             running = False
-        t = True 
+
+        t = True
         if not menu.menuOpen and not transition.active:
             player.update(right, lManager.grid, screen, lManager.enemies, deltaTime, jump=jump)
             for enemy in lManager.enemies:
@@ -134,6 +138,7 @@ async def main():
                 pygame.mixer.music.set_volume(0.2 + menu.soundChange)
             else:
                 pygame.mixer.music.set_volume(0.0 + menu.soundChange)
+
             if lManager.checkNextLevel(player):
                 transition.start(timer.time)
                 lManager.nextLevel()
@@ -151,18 +156,19 @@ async def main():
             else:
                 pygame.mixer.music.set_volume(0.0)
             for enemy in lManager.enemies:
-                enemy.render(screen, [0,0])
+                enemy.render(screen, [0, 0])
 
         if menu.nextLevel:
-            if lManager.currentLevel != len(list(lManager.levels.keys())):
+            lManager.nextLevel()
+            if lManager.checkNextLevel(player):
+                transition.start(timer.time)
                 lManager.nextLevel()
-                fov.decrease()
-                # channel2.play(nextLevel)
-                player.reset()
-                menu.nextLevel = False
-                menu.menuOpen = False
-                timer.reset()
-                menu.holdingNext = False
+            fov.decrease()
+            player.reset()
+            menu.nextLevel = False
+            menu.menuOpen = False
+            timer.reset()
+            menu.holdingNext = False
 
         if menu.prevLevel:
             if lManager.currentLevel > 1:
@@ -174,6 +180,7 @@ async def main():
                 menu.holdingPrev = False
 
         lManager.drawGoal(screen)
+
         if menu.reset:
             player.reset()
             lManager.resetLevel()
@@ -203,7 +210,5 @@ async def main():
         pygame.display.flip()
         clock.tick(Fps)
 
-    await asyncio.sleep(0)
-
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

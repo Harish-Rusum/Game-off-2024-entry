@@ -8,6 +8,7 @@ class Menu:
         self.overlay.fill((0, 0, 0, 200))
         self.holdingEsc = False
         self.reset = False
+        self.gameOver = False
 
         rawButtons = [
             "button.png","button.png","button.png","button.png","button.png","button.png","button.png","button.png","button.png",

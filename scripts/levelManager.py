@@ -81,6 +81,7 @@ class LevelManager:
         self.currentLevel = 1
         self.tileSize = 40
         self.viewX, self.viewY = 20, 15
+        self.gameOver = False
         self.tilesX, self.tilesY = 40, 40
         self.screenX, self.tilesY = self.tileSize * self.viewX, self.tileSize * self.viewY
         self.screen = screen
@@ -111,8 +112,7 @@ class LevelManager:
             self.loadLevel(self.currentLevel + 1)
             self.currentLevel += 1
         else:
-            self.currentLevel = 1
-            self.resetLevel()
+            self.gameOver = True
 
     def drawGoal(self,surf):
         self.animationTimer = (self.animationTimer + 1) % 1000
